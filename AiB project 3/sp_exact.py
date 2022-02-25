@@ -1,6 +1,8 @@
 import numpy as np
 from Bio import SeqIO
 import sys
+import itertools as it
+
 
 # Read fasta files
 def read_fasta_file(filename):
@@ -83,6 +85,65 @@ def calculate_alignment_matrix(sub_m, gap_cost, strA, strB, strC):
                 T[i, j, k] = calc_cost_nonrec(i, j, k)
     print(T[len(str_A),len(str_B),len(str_C)])
     return T
+
+
+
+#Calculate cost of an optimal alignment for string str_A and str_B with substitution matrix sm and gap cost gc
+def calculate_alignment_matrix_new(sub_m, gap_cost, strins):
+    # Global vars
+	global strs, sm, gc, T
+    # Set global vars
+	strs, sm, gc = strings, sub_m, gap_cost
+
+	# Contains all the string lengths
+	str_lens = [len(s) for s in strs]
+	# Contains all the string lengths + 1
+	str_lens_plus_1 = [len(s)+1 for s in strs]
+
+	# Create matrix to fill out when making alignment
+	T = np.full(str_lens_plus_1, None)
+
+	# Fill out each entry in T in correct order (row by row)
+	for index, values in np.ndenumerate(T):
+		T[index] = calc_cost_nonrec_new(list(index))
+	print(T[str_lens])
+	return T
+
+
+# Calculate the cost of a cell in the alignment matrix nonrecursively
+# Index is a tuple of the entry, eg. index = (0,0,0) could be the first matrix entry,
+# index = (0,0,1) the second, etc.
+def calc_cost_rec(index):
+	if(T[index] is None):
+		# We want to find all adjacent cells that have already been filled out
+		prev_neighbour_cells = []
+		dimensions = [*range(len(index))]
+		combs = []
+		# Decrement i of the index values in every possible way
+		for i in range(1, len(index)+1):
+			for comb in it.combinations(dimensions, i):
+				combs.append(comb)
+		for comb in combs:
+			current_cell = index # current neighbour cell
+			# If the neighbour cell is actually within the borders of the matrix
+			if all([current_cell[idx] > 0 for idx in comb]):
+				for idx in comb:
+					current_cell[idx] -= 1
+				prev_neighbour_cells.append(current_cell)
+			else:
+				continue
+		# Now we have a list of all the previous neighbour cells (their indices)
+		# Now, calculate the cost for each of these previous cells to the new cell at pos index
+		costs = []
+		for nb_cell in prev_neighbour_cells:
+			cost = T[nb_cell]
+
+def calc_cost_rec(index):
+	min_list = []
+	if all(i > 0 for in index):
+		cost = calc_cost_rec([i-1 for i in index]) + sub_matrix...
+		min_list.append(cost)
+
 
 #Non reccursive calculation of cost
 def calc_cost_nonrec(i, j, k):
@@ -182,7 +243,7 @@ def print_alignment_to_file(seq_list):
 
 # Code we run from command line
 # Get sub matrix, gap cost, and sequences from command line variables
-sub_matrix = parse_phylip(sys.argv[1])
+global sub_matrix = parse_phylip(sys.argv[1])
 gap_cost = int(sys.argv[2])
 str_A = read_fasta_file(sys.argv[3])[0]
 str_B = read_fasta_file(sys.argv[3])[1]
