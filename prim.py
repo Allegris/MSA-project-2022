@@ -10,8 +10,8 @@ def min_SP_score_index(keys, MST, non_MST):
 
 	# Run through all nodes in non_MST and pick the one with the smallest SP score to a node in MST
 	for idx in non_MST:
-		if keys[idx] < min_score and idx not in MST and idx in non_MST:
-			min_score = keys[idx]
+		if keys[idx][0] < min_score and idx not in MST and idx in non_MST:
+			min_score = keys[idx][0]
 			min_index = idx
 	return min_index
 
@@ -31,13 +31,10 @@ def MST_prim(nodes, use_center_string):
 	MST = []
 	# Contains all the nodes currently NOT in MST
 	non_MST = nodes.copy()
-	# Contains a key for each node (minimum SP score to node in MST, ie. minimum weight on edge to MST)
-	keys = [sys.maxsize] * len(nodes)
+	# Contains a key for each node (minimum SP score to node in MST, ie. minimum weight on edge to MST) and the node in MST
+	keys = [(sys.maxsize, None)] * len(nodes)
 	# Set key for start_node to 0, so we pick this as first node
-	keys[start_node] = 0
-
-	# For entry i (node i), contains the node at the other end of the edge that added node i to the MST
-	key_MST_nodes = [None] * len(nodes)
+	keys[start_node] = (0, None)
 
 	# While we still have nodes in non_MST, we add the minimizing node to MST
 	while len(non_MST) > 0:
@@ -52,16 +49,19 @@ def MST_prim(nodes, use_center_string):
 			if i not in MST and i in non_MST:
 				# Get the SP score of min_node and node i
 				score = score_matrix[min_node][i]
-				# If this score is smaller than the current key, update the key
-				if score > 0 and score < keys[i]:
-					keys[i] = score
-					key_MST_nodes[i] = min_node
-	# Now we have the order that the nodes were added to the MST
-	# But we also want the  ---- maybe put both things in keys, value and node - i think this is better
-	pairs_to_align = [(MST[0], MST[1])]
+				# If this score is smaller than the current key value, update the key value
+				# and the node at the other end of the edge that we add to MST
+				if score > 0 and score < keys[i][0]:
+					keys[i] = (score, min_node)
+	# Now we have the order that the nodes were added to the MST (in list, MST)
+	# And we have the final keys and their corresponding nodes
+	# Combining these, we can get the pairs in the order that we want to align them in MST MSA
+	pairs_to_align = [(MST[0], MST[1])] # First align start node and the next node added to MST
+	# For each other node, n, in MST (in the inserting order of MST), add the pair consisting of (m, n)
+	# where the edge (m, n) were the edge that connected node n to the MST in the algorithm
 	for i in range(2, len(MST)):
 		new_MST_node = MST[i]
-		min_connected_MST_node = key_MST_nodes[new_MST_node]
+		min_connected_MST_node = keys[new_MST_node][1]
 		pairs_to_align.append((min_connected_MST_node, new_MST_node))
 	return pairs_to_align
 
