@@ -18,10 +18,15 @@ def min_SP_score_index(keys, MST, non_MST):
 
 # PRIM's algorithm for computing a minimum spanning tree for a set of strings, nodes
 # (nodes are the string indices, the actual strings can be accessed as node_strings[i] for i in nodes)
-def MST_prim(nodes):
-	# Construct score matrix and center string
+def MST_prim(nodes, use_center_string):
+	# Construct score matrix
 	score_matrix = construct_score_matrix(nodes)
-	start_node = find_center_string_index(score_matrix)
+	# If we want to use the center string as the start node, do that
+	# Else just choose the first node in the list nodes as the start node
+	if use_center_string:
+		start_node = find_center_string_index(score_matrix)
+	else:
+		start_node = 0
 	# Contains all the nodes currently in MST
 	MST = []
 	# Contains all the nodes currently NOT in MST
@@ -95,7 +100,7 @@ gap_cost = 5
 global node_strings
 node_strings = ["AACG", "AAAA", "CCCC", "GGGG"]
 nodes = list(range(len(node_strings)))
-print(MST_prim(nodes))
+print(MST_prim(nodes, True))
 
 
 
