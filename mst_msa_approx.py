@@ -61,6 +61,9 @@ def OLD_extend_M_with_A(M, A):
 def multiple_align(nodes, node_strings, sub_matrix, gap_cost, use_center_string):
     MST_pairs_to_align = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
     M = []
+	# Contains, for string index i, the row index in M that corresponds to this string
+	# This is later used for sorting the rows in M s.t. the string with index 0 is first, then index 1, etc.
+	str_idx_to_row = None * nodes
 
     for i in range(len(MST_pairs_to_align)):
 		# The pair of strings to align in this iteration
@@ -73,13 +76,55 @@ def multiple_align(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
         pair_opt_align = pa.backtrack_nonrec(pair_align_matrix, str_1, str_2, sub_matrix, gap_cost, "", "", len(str_1), len(str_2)) # TODO: refactor the last 2 params in other file
         if i == 0:
             M = pair_opt_align
+			# The first pair are the first two rows in M
+			str_idx_to_row[pair[0]] = 0
+			str_idx_to_row[pair[1]] = 1
         else:
-            M = extend_M(M, pair_opt_align)
+			# We now add string with index pair[1] to the M matrix as row index len(M) - record this info
+			str_idx_to_row[pair[1]] = len(M)
+			# Extend matrix M with the new pairwise optimal alignment
+            M = extend_M(M, pair_opt_align, pair)
     return M
+
+# Extend the matrix M with a new optimal alignment, pair_align
+def extend_M(M, pair_align, pair_idx, str_idx_to_row):
+	# Contains the new M string
+	new_M_str = ""
+	# Let i point to a column in M
+	# (just pick M[0] as range, all M strings should be of same length)
+	while i < len(M[0]):
+		# Let j point to a column in pair_opt_align
+		# (just pick pair_opt_align[0] as range, both strings should be of same length)
+		while j < len(pair_opt_align[0]):
+			# Now we have four cases of how the two columns look.
+			# This is the symbol in M that we are interested in (the row corresponding to string with index pair[0])
+			M_symbol = M[str_idx_to_row[pair[0]]][i]
+			# Upper and lower symbol in the pairwise alignment column
+			upper_symbol = pair_align[0][j]
+			lower_symbol = pair_align[1][j]
+			# Case 1: M_symbol is "-" and upper_symbol is "-"
+			if M_symbol == "-" and upper_symbol == "-":
+				# We add lower_symbol to new_M_str and increment i and j
+				new_M_str += lower_symbol
+				i += 1
+				j += 1
+			# Case 2: M_symbol is "-", but upper_symbol is not "-"
+			elif M_symbol == "-" and upper_symbol != "-":
+				# We add "-" to new_M_str and increment i
+				new_M_str += "-"
+				i += 1
+			# Case 3: M_symbol is not "-", but upper_symbol is "-"
+			elif M_symbol != "-" and upper_symbol == "-":
+				# We create new column with lower_symbol in last row and only "-"'s above it, and increment j
+				M = [s + "-" for s in M]
+				new_M_str += lower_symbol
+				j += 1
+			elif M_symbol != "-" and upper_symbol != "-":
+
 
 
 # Extend the M matrix with a new alignment, A
-def extend_M(M, A):
+def OLD_extend_M(M, A):
     # List for holding new M-strings
     new_M = ["" for i in range(len(M))]
     # String holding the last M-string for the new M-list
