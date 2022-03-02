@@ -36,6 +36,9 @@ def MST_prim(nodes, use_center_string):
 	# Set key for start_node to 0, so we pick this as first node
 	keys[start_node] = 0
 
+	# For entry i (node i), contains the node at the other end of the edge that added node i to the MST
+	key_MST_nodes = [None] * len(nodes)
+
 	# While we still have nodes in non_MST, we add the minimizing node to MST
 	while len(non_MST) > 0:
 		# Get the min node
@@ -52,7 +55,15 @@ def MST_prim(nodes, use_center_string):
 				# If this score is smaller than the current key, update the key
 				if score > 0 and score < keys[i]:
 					keys[i] = score
-	return MST
+					key_MST_nodes[i] = min_node
+	# Now we have the order that the nodes were added to the MST
+	# But we also want the  ---- maybe put both things in keys, value and node - i think this is better
+	pairs_to_align = [(MST[0], MST[1])]
+	for i in range(2, len(MST)):
+		new_MST_node = MST[i]
+		min_connected_MST_node = key_MST_nodes[new_MST_node]
+		pairs_to_align.append((min_connected_MST_node, new_MST_node))
+	return pairs_to_align
 
 
 # Construct a score matrix for the strings in list S
