@@ -18,9 +18,9 @@ def min_SP_score_index(keys, MST, non_MST):
 
 # PRIM's algorithm for computing a minimum spanning tree for a set of strings, nodes
 # (nodes are the string indices, the actual strings can be accessed as node_strings[i] for i in nodes)
-def MST_prim(nodes, use_center_string):
+def MST_prim(nodes, node_strings, sub_matrix, gap_cost, use_center_string):
 	# Construct score matrix
-	score_matrix = construct_score_matrix(nodes)
+	score_matrix = construct_score_matrix(nodes, node_strings, sub_matrix, gap_cost)
 	# If we want to use the center string as the start node, do that
 	# Else just choose the first node in the list nodes as the start node
 	if use_center_string:
@@ -66,9 +66,9 @@ def MST_prim(nodes, use_center_string):
 	return pairs_to_align
 
 
-# Construct a score matrix for the strings in list S
+# Construct a score matrix for the string indices in list S (the actual strings are in node_strings)
 # Uses pairwise alignment scores (SP scores)
-def construct_score_matrix(S):
+def construct_score_matrix(S, node_strings, sub_matrix, gap_cost):
     # Contains pairwise distances from s to s
     score_matrix = np.full((len(S), len(S)), None)
     # Distances from s to s is 0
@@ -102,17 +102,15 @@ def find_center_string_index(score_matrix):
 
 
 ##### Code to run #####
-
-global submatrix, gap_cost
+'''
 #sub_matrix = {"A": {"A": 5, "C": 5, "G": 5, "T": 5}, "C": {"A": 5, "C": 5, "G": 5, "T": 5}, "G": {"A": 5, "C": 5, "G": 5, "T": 5}, "T": {"A": 5, "C": 5, "G": 5, "T": 5}}
 sub_matrix = {"A": {"A": 10, "C": 2, "G": 5, "T": 2}, "C": {"A": 2, "C": 10, "G": 2, "T": 5}, "G": {"A": 5, "C": 2, "G": 10, "T": 2}, "T": {"A": 2, "C": 5, "G": 2, "T": 10}}
 gap_cost = 5
 
-global node_strings
 node_strings = ["AACG", "AAAA", "CCCC", "GGGG"]
 nodes = list(range(len(node_strings)))
-print(MST_prim(nodes, True))
-
+print(MST_prim(nodes, node_strings, sub_matrix, gap_cost, True))
+'''
 
 
 
