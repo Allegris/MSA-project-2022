@@ -63,7 +63,7 @@ def multiple_align(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
     M = []
 	# Contains, for string index i, the row index in M that corresponds to this string
 	# This is later used for sorting the rows in M s.t. the string with index 0 is first, then index 1, etc.
-	str_idx_to_row = None * nodes
+    str_idx_to_row = [None] * len(nodes)
 
     for i in range(len(MST_pairs_to_align)):
 		# The pair of strings to align in this iteration
@@ -77,14 +77,15 @@ def multiple_align(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
         if i == 0:
             M = pair_opt_align
 			# The first pair are the first two rows in M
-			str_idx_to_row[pair[0]] = 0
-			str_idx_to_row[pair[1]] = 1
+            str_idx_to_row[pair[0]] = 0
+            str_idx_to_row[pair[1]] = 1
         else:
 			# We now add string with index pair[1] to the M matrix as row index len(M) - record this info
-			str_idx_to_row[pair[1]] = len(M)
+            str_idx_to_row[pair[1]] = len(M)
 			# Extend matrix M with the new pairwise optimal alignment
-            M = extend_M(M, pair_opt_align, pair)
+            M = extend_M(M, pair_opt_align, pair, str_idx_to_row)
     return M
+
 
 # Extend the matrix M with a new optimal alignment, pair_align
 def extend_M(M, pair_align, pair_idx, str_idx_to_row):
@@ -92,77 +93,47 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 	new_M_str = ""
 	# Let i point to a column in M
 	# (just pick M[0] as range, all M strings should be of same length)
-	while i < len(M[0]):
-		# Let j point to a column in pair_opt_align
-		# (just pick pair_opt_align[0] as range, both strings should be of same length)
-		while j < len(pair_opt_align[0]):
-			# Now we have four cases of how the two columns look.
-			# This is the symbol in M that we are interested in (the row corresponding to string with index pair[0])
-			M_symbol = M[str_idx_to_row[pair[0]]][i]
-			# Upper and lower symbol in the pairwise alignment column
-			upper_symbol = pair_align[0][j]
-			lower_symbol = pair_align[1][j]
-			# Case 1: M_symbol is "-" and upper_symbol is "-"
-			if M_symbol == "-" and upper_symbol == "-":
-				# We add lower_symbol to new_M_str and increment i and j
-				new_M_str += lower_symbol
-				i += 1
-				j += 1
-			# Case 2: M_symbol is "-", but upper_symbol is not "-"
-			elif M_symbol == "-" and upper_symbol != "-":
-				# We add "-" to new_M_str and increment i
-				new_M_str += "-"
-				i += 1
-			# Case 3: M_symbol is not "-", but upper_symbol is "-"
-			elif M_symbol != "-" and upper_symbol == "-":
-				# We create new column with lower_symbol in last row and only "-"'s above it, and increment j
-				M = [s + "-" for s in M]
-				new_M_str += lower_symbol
-				j += 1
-			elif M_symbol != "-" and upper_symbol != "-":
-
-
-
-# Extend the M matrix with a new alignment, A
-def OLD_extend_M(M, A):
-    # List for holding new M-strings
-    new_M = ["" for i in range(len(M))]
-    # String holding the last M-string for the new M-list
-    new_M_str = ""
-    # Iterate through columns in A (opt alignment)
-    for j in range(len(A[0])):
-        # Upper and lower symbol in the j'th column
-        upper_symbol = A[0][j]
-        lower_symbol = A[1][j]
-        # Case: insertion
-        if upper_symbol == "-":
-            # We want to add a column to M consisting of only "-"'s except
-            # the last row, which should contain lower_symbol:
-            # Add "-" to new M-strings (except for last M-string)
-            new_M = [old_str + "-" for old_str in new_M]
-            # Add lower_symbol to last M-string
-            new_M_str += lower_symbol
-        # Case: (mis)match or deletion
-        else:
-            # Find first occurrance of upper_symbol in first M-string
-            # (we have cut off the part the string that we have already added to the new M-strings)
-            pos = M[0].find(upper_symbol)
-            # Add everything up until this symbol to all the new M-strings (except the last)
-            prefixes_M = [m_str[:pos+1] for m_str in M]
-            new_M = [new_M[i] + prefixes_M[i] for i in range(len(new_M))]
-            # To the last string, add correspondingly many gaps (minus 1) and lower_symbol
-            new_M_str += "-"*pos + lower_symbol
-            # Update M to only contain suffix that we have not yet "transferred" to new_M yet
-            M = [m_str[pos+1:] for m_str in M]
-    # Check if there is any suffix of the M-strings remaining and add these to new_M (and corresponding gaps to new_M_str)
-    suffix_length_M = len(M[0])
-    if suffix_length_M > 0:
-        new_M = [new_M[i] + M[i] for i in range(len(new_M))]
-        new_M_str += "-"*suffix_length_M
-    # Add the last M-string to the updated M-strings in new_M
-    new_M.append(new_M_str)
-    # Return entire new M
-    return new_M
+	# Let j point to a column in pair_opt_align
+	# (just pick pair_opt_align[0] as range, both strings should be of same length)
+	i = j = 0
+	while i < len(M[0]) and j < len(pair_align[0]):  # TODO: Should this be OR??? What to do if we run out of string in one of them?
+		# Now we have four cases of how the two columns look.
+		# This is the symbol in M that we are interested in (the row corresponding to string with index pair[0])
+		M_symbol = M[str_idx_to_row[pair_idx[0]]][i]
+		# Upper and lower symbol in the pairwise alignment column
+		upper_symbol = pair_align[0][j]
+		lower_symbol = pair_align[1][j]
+		# Case 1: M_symbol is "-" and upper_symbol is "-"
+		if M_symbol == "-" and upper_symbol == "-":
+			# We add lower_symbol to new_M_str and increment i and j
+			new_M_str += lower_symbol
+			i += 1
+			j += 1
+		# Case 2: M_symbol is "-", but upper_symbol is not "-"
+		elif M_symbol == "-" and upper_symbol != "-":
+			# We add "-" to new_M_str and increment i
+			new_M_str += "-"
+			i += 1
+		# Case 3: M_symbol is not "-", but upper_symbol is "-"
+		elif M_symbol != "-" and upper_symbol == "-":
+			# We create new column with lower_symbol in last row and only "-"'s above it, and increment j
+			# We also increment i, since we add a new column, and we don't want to look at this column in next iteration
+			M = [s + "-" for s in M]
+			new_M_str += lower_symbol
+			i += 1 # TODO: Should this be here?? (se above comment)
+			j += 1
+		# Case 4: M_symbol is not "-" and upper_symbol is not "-"
+		# TODO: This case is the same as case 1: we can combine them to test if M_symbol == upper_symbol
+		elif M_symbol != "-" and upper_symbol != "-":
+			new_M_str = lower_symbol
+			i += 1
+			j += 1
+	# If we have run through all of pair_align, but now M, then add the corresponding number of "-"'s to new_M_str
+	diff_len = len(M[0]) - len(new_M_str)
+	new_M_str += "-" * diff_len
+	# new_M_str is done - append it to M and return M
+	M.append(new_M_str)
+	return M
 
 
 
@@ -176,7 +147,10 @@ gap_cost = 5
 node_strings = ["AACG", "AAAA", "CCCC", "GGGG"]
 nodes = list(range(len(node_strings)))
 
+# Should we use the center string as start node in MST
+use_center_string = True
 
+print(multiple_align(nodes, node_strings, sub_matrix, gap_cost, use_center_string))
 
 
 
