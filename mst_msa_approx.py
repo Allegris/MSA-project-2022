@@ -103,7 +103,7 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 		# Now we have four cases of how the two columns look.
 		# This is the symbol in M that we are interested in (the row corresponding to string with index pair[0])
 		M_symbol = M[str_idx_to_row[pair_idx[0]]][i]
-		# Upper and lower symbol in the pairwise alignment column
+#		# Upper and lower symbol in the pairwise alignment column
 		upper_symbol = pair_align[0][j]
 		lower_symbol = pair_align[1][j]
 		# Case 1: M_symbol is "-" and upper_symbol is "-"
@@ -121,14 +121,14 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 		elif M_symbol != "-" and upper_symbol == "-":
 			# We create new column with lower_symbol in last row and only "-"'s above it, and increment j
 			# We also increment i, since we add a new column, and we don't want to look at this column in next iteration
-			M = [s + "-" for s in M]
+			M = [s[:i] + "-" + s[i:] for s in M]
 			new_M_str += lower_symbol
 			i += 1 # TODO: Should this be here?? (se above comment)
 			j += 1
 		# Case 4: M_symbol is not "-" and upper_symbol is not "-"
 		# TODO: This case is the same as case 1: we can combine them to test if M_symbol == upper_symbol
 		elif M_symbol != "-" and upper_symbol != "-":
-			new_M_str = lower_symbol
+			new_M_str += lower_symbol
 			i += 1
 			j += 1
 	# If we have run through all of pair_align, but now M, then add the corresponding number of "-"'s to new_M_str

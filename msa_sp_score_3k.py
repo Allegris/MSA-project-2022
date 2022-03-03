@@ -1,6 +1,6 @@
 ##########################################################################
-# 
-# msa_sp_score_3k.py 
+#
+# msa_sp_score_3k.py
 #
 # Computes the sum-of-pairs score of an MSA stored in FASTA format using
 # a specific score-matrix and gapcost cf. mandatory project in AiB.
@@ -30,11 +30,51 @@ where <filename> contains a multiple sequence alignment over the alphabet
 # Cost parameters and helper functions
 ##########################################################################
 
+
 cost = [[0, 5, 2, 5, 5],  # A
         [5, 0, 5, 2, 5],  # C
         [2, 5, 0, 5, 5],  # G
         [5, 2, 5, 0, 5],  # T
         [5, 5, 5, 5, 0]]  #-'
+
+'''
+
+cost = [[0, 5, 2, 5, 1],  # A
+        [5, 0, 5, 2, 1],  # C
+        [2, 5, 0, 5, 1],  # G
+        [5, 2, 5, 0, 1],  # T
+        [1, 1, 1, 1, 0]]  #-'
+
+cost = [[0, 5, 2, 5, 2],  # A
+        [5, 0, 5, 2, 2],  # C
+        [2, 5, 0, 5, 2],  # G
+        [5, 2, 5, 0, 2],  # T
+        [2, 2, 2, 2, 0]]  #-'
+
+cost = [[0, 5, 2, 5, 3],  # A
+        [5, 0, 5, 2, 3],  # C
+        [2, 5, 0, 5, 3],  # G
+        [5, 2, 5, 0, 3],  # T
+        [3, 3, 3, 3, 0]]  #-'
+
+cost = [[0, 5, 2, 5, 4],  # A
+        [5, 0, 5, 2, 4],  # C
+        [2, 5, 0, 5, 4],  # G
+        [5, 2, 5, 0, 4],  # T
+        [4, 4, 4, 4, 0]]  #-'
+
+cost = [[0, 5, 2, 5, 5],  # A
+        [5, 0, 5, 2, 5],  # C
+        [2, 5, 0, 5, 5],  # G
+        [5, 2, 5, 0, 5],  # T
+        [5, 5, 5, 5, 0]]  #-'
+
+cost = [[0, 5, 2, 5, 10],  # A
+        [5, 0, 5, 2, 10],  # C
+        [2, 5, 0, 5, 10],  # G
+        [5, 2, 5, 0, 10],  # T
+        [10, 10, 10, 10, 0]]  #-'
+'''
 
 dict_str2seq = {'a':0, 'c':1, 'g':2, 't':3, 'A':0, 'C':1, 'G':2, 'T':3, '-':4, 'N':0, 'R':0, 'S':0}
 
@@ -80,14 +120,14 @@ def read_fasta(filename):
 
 def remove_whitespaces(s):
 	return "".join(s.split())
-	
+
 ###########################################################################
 # compute_sp_score(filename)
 #
 # Returns the sp-score of the MSA stored in the FASTA file 'filename'
 ###########################################################################
 
-def compute_sp_score(filename):	
+def compute_sp_score(filename):
 	# Read FASTA file and convert input strings to sequences
 	row = []
 	for s in read_fasta(filename):
