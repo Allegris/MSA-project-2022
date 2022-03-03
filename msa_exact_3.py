@@ -5,39 +5,30 @@ import fasta_and_phylip as fp # Helper functions for reading/writing/parsing fas
 
 
 ##########################################################################
-# Compute an optimal MSA for 3 sequences (exact method)
+# Compute an optimal MSA (and its score) for 3 sequences (exact method)
 ##########################################################################
 
 
-#Calculate cost of an optimal alignment for string str_A and str_B with substitution matrix sm and gap cost gc
-def calculate_alignment_matrix(sub_m, gap_cost, strA, strB, strC):
-    # Global vars
-    global str_A
-    global str_B
-    global str_C
-    global sm
-    global gc
-    global T
-
-    # Set global vars
-    str_A = strA
-    str_B = strB
-    str_C = strC
-    sm = sub_m
-    gc = gap_cost
-
+'''
+Calculates the alignment matrix an optimal alignment of str_A and str_B using specified substitution matrix and gap cost
+'''
+def calculate_alignment_matrix(str_A, str_B, str_C, sub_matrix, gap_cost):
+    # Alignment matrix, T
     T = np.full((len(str_A) + 1, len(str_B) + 1, len(str_C) + 1), None)
-    #iterate through rows
+
+    # Iterate through rows
     for i in range(0, len(str_A) + 1):
-        #iterate through columns
+        # Iterate through columns
         for j in range(0, len(str_B) + 1):
             for k in range(0, len(str_C) + 1):
-                T[i, j, k] = calc_cost_nonrec(i, j, k)
-    #print(T[len(str_A),len(str_B),len(str_C)])
+                T[i, j, k] = calc_cost_nonrec(T, str_A, str_B, str_C, sub_matrix, gap_cost, i, j, k)
     return T
 
-#Non reccursive calculation of cost
-def calc_cost_nonrec(i, j, k):
+
+'''
+Calculates the cost of a single entry in alignment matrix T (the minimal possible cost)
+'''
+def calc_cost_nonrec(T, str_A, str_B, str_C, sm, gc, i, j, k):
     if(T[i,j,k] is None):
         v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = float("inf")
         #get diagonal value
@@ -66,8 +57,12 @@ def calc_cost_nonrec(i, j, k):
         return T[i,j,k]
 
 
-#Non recursive backtracking
-def backtrack_nonrec(T, str_A, str_B, str_C):
+'''
+Backtracks the alignment matrix T non-recursively to find an optimal alignment of the 3 strings
+
+Returns a list of the optimal alignment strings (list of size 3)
+'''
+def backtrack_nonrec(T, str_A, str_B, str_C, sm, gc):
     res_str_A = ""
     res_str_B = ""
     res_str_C = ""
@@ -76,7 +71,7 @@ def backtrack_nonrec(T, str_A, str_B, str_C):
     k = len(str_C)
     while(i >= 0 and j >= 0 and k>= 0):
         cell = T[i, j, k]
-        #diagonal cell - substitution
+        # Diagonal cell - substitution
         if (i > 0 and j > 0 and k > 0 and cell == T[i-1, j-1, k-1] + sm[str_A[i-1]][str_B[j-1]] + sm[str_A[i-1]][str_C[k-1]] + sm[str_B[j-1]][str_C[k-1]]):
             res_str_A += str_A[i-1]
             res_str_B += str_B[j-1]
@@ -84,7 +79,7 @@ def backtrack_nonrec(T, str_A, str_B, str_C):
             i -= 1
             j -= 1
             k -= 1
-        #upper cell - insertion
+        # Upper cell - insertion
         elif (i > 0 and j > 0 and k>= 0 and cell == T[i-1, j-1, k] + sm[str_A[i-1]][str_B[j-1]] + 2*gc):
             res_str_A += str_A[i-1]
             res_str_B += str_B[j-1]
@@ -126,9 +121,17 @@ def backtrack_nonrec(T, str_A, str_B, str_C):
 
 
 
+##########################################################################
+# Code to run
+##########################################################################
 
 
-# Code we run from command line
+# Run from command line:
+# python msa_exact_3.py sub_m.txt 5 brca.fasta True
+# (use False if we just want to print the score of the MSA using the matrix T, and not use Storm's script (and backtracking) for this)
+# Remenber to edit Storm's script, msa_sp_score_3k.py, to use the same sub_matrix and gap_cost
+
+
 # Get sub matrix, gap cost, and sequences from command line variables
 sub_matrix = fp.parse_phylip(sys.argv[1])
 gap_cost = int(sys.argv[2])
@@ -141,13 +144,16 @@ letters = fp.parse_phylip(sys.argv[1], True)
 
 # Check if sequences only contain allowed letters
 if(all(c in letters for c in str_A) and all(c in letters for c in str_B) and all(c in letters for c in str_C)):
-    # Calculate alignment matrix and print optimal cost
-    t = calculate_alignment_matrix(sub_matrix, gap_cost, str_A, str_B, str_C)
-    # If we want to backtrack, write optimal alignment in file alignment.fasta
+    # Calculate alignment matrix
+    t = calculate_alignment_matrix(str_A, str_B, str_C, sub_matrix, gap_cost)
+    # If we want to backtrack, write optimal alignment in file alignment.fasta and print score using Storm's script
     if len(sys.argv)==5 and sys.argv[4]=="True":
-        b = backtrack_nonrec(t, str_A, str_B, str_C)
+        b = backtrack_nonrec(t, str_A, str_B, str_C, sub_matrix, gap_cost)
         fp.write_to_fasta_file(b)
         print(sp_score_msa.compute_sp_score("alignment.fasta"))
+    # Else, just print score using last value in matrix T
+    else:
+        print(t[len(str_A),len(str_B),len(str_C)])
 else:
     print("Error: A letter in a sequence is not specified in the substitution matrix.")
 
