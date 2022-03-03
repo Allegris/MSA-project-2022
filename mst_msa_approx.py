@@ -5,6 +5,11 @@ import project2_linear as pa #pairwise alignment / SP score
 import msa_sp_score_3k as sp_score_msa # Storm's script
 
 
+##########################################################################
+# Compute MSA using MST
+##########################################################################
+
+
 '''
 Computes a multiple sequence alignment (MSA) of the input nodes by:
 
@@ -99,6 +104,11 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 	return M
 
 
+##########################################################################
+# Helper functions for reading and writing to files
+##########################################################################
+
+
 '''
 Reads a fasta file and changes all nucleic symbols not in [A, C, G, T] to A
 
@@ -170,8 +180,10 @@ def parse_phylip(filename, getAlphabet = False):
         return sub_matrix
 
 
+##########################################################################
+# Code to run
+##########################################################################
 
-##### Code to run #####
 
 # Run from command line:
 # python mst_msa_approx.py sub_m.txt 5 brca.fasta True
