@@ -19,6 +19,8 @@ Computes a multiple sequence alignment (MSA) of the input nodes by:
 - Uses this MST as a "guide tree" when doing an approximation algorithm much like Gusfield's 2-approximation algorithm,
   but where the matrix M is extended with the pairwise alignments in the order that they are added to the MST
 
+- Sorts the MSA st. the row order corresponds to the order in node_strings
+
 Returns the MSA
 '''
 def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string):
@@ -47,8 +49,12 @@ def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
             str_idx_to_row[pair[1]] = len(M)
 			# Extend matrix M with the new pairwise optimal alignment
             M = extend_M(M, pair_opt_align, pair, str_idx_to_row)
-		# TODO: SORT M!!!
-    return M
+	# Sort M so that the row order correspond to the order in node_strings
+    sorted_M = [None] * len(M)
+    for i in range(len(str_idx_to_row)):
+        row_idx = str_idx_to_row[i]
+        sorted_M[i] = M[row_idx]
+    return sorted_M
 
 
 '''
@@ -131,6 +137,7 @@ letters = fp.parse_phylip(sys.argv[1], True)
 if(all((c in letters for c in s) for s in node_strings)):
     # Construct the MSA
     seqs = MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
+    print("len seqs ", len(seqs))
 	# Write MSA to file "alignment.fasta"
     fp.write_to_fasta_file(seqs)
 	# Print the SP score of the MSA, using Storm's script
