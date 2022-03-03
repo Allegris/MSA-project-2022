@@ -70,13 +70,13 @@ def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
 
     for i in range(len(MST_pairs_to_align)):
 		# The pair of strings to align in this iteration
-        pair = MST_pairs_to_align[i] # TODO: maybe refactor this var (delete)
+        pair = MST_pairs_to_align[i]
         str_1 = node_strings[pair[0]]
         str_2 = node_strings[pair[1]]
 		# Make alignment matrix for the pair of strings
         pair_align_matrix = pa.calculate_alignment_matrix(sub_matrix, gap_cost, str_1, str_2) # Score of alignment A
 		# Create an optimal alignment, by backtracking the matrix
-        pair_opt_align = pa.backtrack_nonrec(pair_align_matrix, str_1, str_2, sub_matrix, gap_cost, "", "", len(str_1), len(str_2)) # TODO: refactor the last 2 params in other file
+        pair_opt_align = pa.backtrack_nonrec(pair_align_matrix, str_1, str_2, sub_matrix, gap_cost, "", "") # TODO: refactor the last 2 params in other file
         if i == 0:
             M = pair_opt_align
 			# The first pair are the first two rows in M

@@ -135,7 +135,7 @@ def multiple_align(S, center):
     for s in S:
         A_matrix = pa.calculate_alignment_matrix(sub_matrix, gap_cost, center, s)
         # optimal alignment
-        A = pa.backtrack_nonrec(A_matrix, center, s, sub_matrix, gap_cost, "", "", len(center), len(s))
+        A = pa.backtrack_nonrec(A_matrix, center, s, sub_matrix, gap_cost, "", "")
         if(s != S[0]):
             M = extend_M_with_A(M, A)
         else:
