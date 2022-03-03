@@ -99,7 +99,7 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 	# Let j point to a column in pair_opt_align
 	# (just pick pair_opt_align[0] as range, both strings should be of same length)
 	i = j = 0
-	while i < len(M[0]) and j < len(pair_align[0]):  # TODO: Should this be OR??? What to do if we run out of string in one of them?
+	while i < len(M[0]) and j < len(pair_align[0]):
 		# Now we have four cases of how the two columns look.
 		# This is the symbol in M that we are interested in (the row corresponding to string with index pair[0])
 		M_symbol = M[str_idx_to_row[pair_idx[0]]][i]
@@ -123,7 +123,7 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 			# We also increment i, since we add a new column, and we don't want to look at this column in next iteration
 			M = [s[:i] + "-" + s[i:] for s in M]
 			new_M_str += lower_symbol
-			i += 1 # TODO: Should this be here?? (se above comment)
+			i += 1 # This is here, because we insert a new column to the left of col i - and we still want to look at col i and not this new column
 			j += 1
 		# Case 4: M_symbol is not "-" and upper_symbol is not "-"
 		# TODO: This case is the same as case 1: we can combine them to test if M_symbol == upper_symbol
