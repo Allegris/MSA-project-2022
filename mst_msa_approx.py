@@ -183,6 +183,7 @@ sub_matrix = parse_phylip(sys.argv[1])
 gap_cost = int(sys.argv[2])
 node_strings = read_fasta_file(sys.argv[3])
 use_center_string = bool(sys.argv[4]) # Should center string be used as start node in MST?
+# TODO: It seems that finding the center string yields the same SP scores as when not, so maybe delete this option later...
 
 # Assign indices to the strings in node_strings
 nodes = list(range(len(node_strings)))
