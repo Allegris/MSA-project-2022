@@ -68,16 +68,18 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 	new_M_str = ""
 	# Let i point to a column in M
 	# (just pick M[0] as range, all M strings should be of same length)
+	i = 0
 	# Let j point to a column in pair_opt_align
 	# (just pick pair_opt_align[0] as range, both strings should be of same length)
-	i = j = 0
+	j = 0
 	while i < len(M[0]) and j < len(pair_align[0]):
-		# Now we have four cases of how the two columns look.
 		# This is the symbol in M that we are interested in (the row corresponding to string with index pair[0])
 		M_symbol = M[str_idx_to_row[pair_idx[0]]][i]
 		# Upper and lower symbol in the pairwise alignment column
 		upper_symbol = pair_align[0][j]
 		lower_symbol = pair_align[1][j]
+
+		# Now we have four cases of how the two columns look.
 		# Case 1: M_symbol is "-" and upper_symbol is "-"
 		if M_symbol == "-" and upper_symbol == "-":
 			# We add lower_symbol to new_M_str and increment i and j
@@ -98,13 +100,24 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 			i += 1 # This is here, because we insert a new column to the left of col i - and we still want to look at col i and not this new column
 			j += 1
 		# Case 4: M_symbol is not "-" and upper_symbol is not "-"
-		elif M_symbol != "-" and upper_symbol != "-":
+		elif M_symbol != "-" and upper_symbol != "-" and M_symbol == upper_symbol:
 			new_M_str += lower_symbol
 			i += 1
 			j += 1
-	# If we have run through all of pair_align, but now M, then add the corresponding number of "-"'s to new_M_str
-	diff_len = len(M[0]) - len(new_M_str)
-	new_M_str += "-" * diff_len
+	# If we broke while loop, because we ran out of M-string,
+	# add "-"'s to M-strings, except for the upper string in pair_align and new_M_str,
+	# for these, just add the rest of the pair_align
+	if i >= len(M[0]):
+		new_M_str += pair_align[1][j:]
+		row_of_upper = str_idx_to_row[pair_idx[0]]
+		M[row_of_upper] += pair_align[0][j:]
+		M = [M[i] + "-" * len(pair_align[0][j:]) if i != row_of_upper else M[i] for i in range(len(M))]
+	# If we broke while loop, because we ran out of pair_align string,
+	# add "-"'s to new_M_str
+	elif j >= len(pair_align[0]):
+		# Diff in length of M strings and new_M_str
+		diff_len = len(M[0]) - len(new_M_str)
+		new_M_str += "-" * diff_len
 	# new_M_str is done - append it to M and return M
 	M.append(new_M_str)
 	return M
@@ -137,7 +150,6 @@ letters = fp.parse_phylip(sys.argv[1], True)
 if(all((c in letters for c in s) for s in node_strings)):
     # Construct the MSA
     seqs = MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
-    print("len seqs ", len(seqs))
 	# Write MSA to file "alignment.fasta"
     fp.write_to_fasta_file(seqs)
 	# Print the SP score of the MSA, using Storm's script
