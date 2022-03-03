@@ -1,8 +1,8 @@
-from Bio import SeqIO
 import sys
 import prim
-import project2_linear as pa #pairwise alignment / SP score
+import project2_linear as pa # Pairwise alignment / SP score
 import msa_sp_score_3k as sp_score_msa # Storm's script
+import fasta_and_phylip as fp # Helper functions for reading/writing/parsing fasta and phylip files
 
 
 ##########################################################################
@@ -105,82 +105,6 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 
 
 ##########################################################################
-# Helper functions for reading and writing to files
-##########################################################################
-
-
-'''
-Reads a fasta file and changes all nucleic symbols not in [A, C, G, T] to A
-
-Returns a list containing the strings/sequences in the fasta file
-'''
-def read_fasta_file(filename):
-    rec_list = []
-    nucleic_list = ["U", "W", "S", "M", "K", "R", "Y", "B", "D", "H", "V", "N", "Z"]
-    for record in SeqIO.parse(filename, "fasta"):
-        corrected_seq = str(record.seq)
-        for symbol in nucleic_list:
-            corrected_seq = corrected_seq.replace(symbol, "A")
-        rec_list.append(corrected_seq)
-    return rec_list
-
-
-'''
-Writes the strings/sequences in seq_list to the file "alignment.fasta" with headers seq1, seq2 etc.
-'''
-def write_to_fasta_file(seq_list):
-    x = open("alignment.fasta", "w")
-    for i in range(len(seq_list)):
-        x.write(">seq" + str(i+1) + "\n" + seq_list[i] + "\n")
-    x.close()
-
-
-'''
-Parses a phylip file by:
-
-Reading a file of this format:
-4
-A  10  2  5  2
-C  2  10  2  5
-G  5  2  10  2
-T  2  5  2  10
-
-representing a substitution matrix and returns a dictionary corresponding to the substitutionmatrix
-
-Returns a dictionary of this format (if getAlphabet = False):
-{"A": {"A": 10, "C": 2, "G": 5, "T": 2},
- "C": {"A": 2, "C": 10, "G": 2, "T": 5},
- "G": {"A": 5, "C": 2, "G": 10, "T": 2},
- "T": {"A": 2, "C": 5, "G": 2, "T": 10}}
-
-If getAlphabet = True, we instead return a list of the alphabet letters:
-['A', 'C', 'G', 'T']
-'''
-def parse_phylip(filename, getAlphabet = False):
-    f= open(filename, "r")
-    f1 = f.readlines()
-    f2 = list()
-    for x in f1:
-        f2.append(x.split())
-    alph_size = int(f2[0][0])
-
-    letters = list()
-    for i in range(1, alph_size+1):
-        letters.insert(i, f2[i][0])
-
-    sub_matrix = dict()
-    for i in range(len(letters)):
-        inner_dict = dict()
-        for j in range(len(letters)):
-            inner_dict[letters[j]] = int(f2[i+1][j+1])
-        sub_matrix[letters[i]] = inner_dict
-    if(getAlphabet):
-        return letters
-    else:
-        return sub_matrix
-
-
-##########################################################################
 # Code to run
 ##########################################################################
 
@@ -191,9 +115,9 @@ def parse_phylip(filename, getAlphabet = False):
 # Remenber to edit Storm's script, msa_sp_score_3k.py, to use the same sub_matrix and gap_cost
 
 # Get sub matrix, gap cost, and sequences from command line variables
-sub_matrix = parse_phylip(sys.argv[1])
+sub_matrix = fp.parse_phylip(sys.argv[1])
 gap_cost = int(sys.argv[2])
-node_strings = read_fasta_file(sys.argv[3])
+node_strings = fp.read_fasta_file(sys.argv[3])
 use_center_string = bool(sys.argv[4]) # Should center string be used as start node in MST?
 # TODO: It seems that finding the center string yields the same SP scores as when not, so maybe delete this option later...
 
@@ -201,14 +125,14 @@ use_center_string = bool(sys.argv[4]) # Should center string be used as start no
 nodes = list(range(len(node_strings)))
 
 # Get letters specified in substitution matrix file
-letters = parse_phylip(sys.argv[1], True)
+letters = fp.parse_phylip(sys.argv[1], True)
 
 # Check if sequences only contain allowed letters
 if(all((c in letters for c in s) for s in node_strings)):
     # Construct the MSA
     seqs = MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
 	# Write MSA to file "alignment.fasta"
-    write_to_fasta_file(seqs)
+    fp.write_to_fasta_file(seqs)
 	# Print the SP score of the MSA, using Storm's script
 	# Note that the command line specified sub_matrix and gap_cost should correspond to those in Storm's script
     print(sp_score_msa.compute_sp_score("alignment.fasta"))
