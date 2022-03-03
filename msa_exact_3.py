@@ -29,32 +29,31 @@ def calculate_alignment_matrix(str_A, str_B, str_C, sub_matrix, gap_cost):
 Calculates the cost of a single entry in alignment matrix T (the minimal possible cost)
 '''
 def calc_cost_nonrec(T, str_A, str_B, str_C, sm, gc, i, j, k):
-    if(T[i,j,k] is None):
+    if(T[i, j, k] is None):
         v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = float("inf")
-        #get diagonal value
+		# If first entry in T
+        if(i == 0 and j == 0 and k ==0):
+            v0 = 0
+        # "Diagonal value"
         if(i > 0 and j > 0 and k > 0):
             v1 = T[i-1, j-1, k-1] + sm[str_A[i-1]][str_B[j-1]] + sm[str_A[i-1]][str_C[k-1]] + sm[str_B[j-1]][str_C[k-1]]
-        #get above value
-        if(i > 0 and j > 0 and k>=0):
+        # "Above value"
+        if(i > 0 and j > 0 and k >= 0):
             v2 = T[i-1, j-1, k] + sm[str_A[i-1]][str_B[j-1]] + 2*gc
-        #get left value
-        if(i > 0 and j >= 0 and k>0):
+        if(i > 0 and j >= 0 and k > 0):
             v3 = T[i-1, j, k-1] + sm[str_A[i-1]][str_C[k-1]] + 2*gc
-        if(i >= 0 and j > 0 and k>0):
+        if(i >= 0 and j > 0 and k > 0):
             v4 = T[i, j-1, k-1] + sm[str_B[j-1]][str_C[k-1]] + 2*gc
         if(i > 0 and j >= 0 and k >= 0):
             v5 = T[i-1, j, k] + 2*gc
         if(i >= 0 and j > 0 and k >= 0):
             v6 = T[i, j-1, k] + 2*gc
         if(i >= 0 and j >= 0 and k > 0):
-            v7 = T[i, j,k-1] + 2*gc
-        #Left top corner
-        if(i == 0 and j == 0 and k ==0):
-            v0 = 0
+            v7 = T[i, j, k-1] + 2*gc
         min_val =  min(v0, v1, v2, v3, v4, v5, v6, v7)
         return min_val
     else:
-        return T[i,j,k]
+        return T[i, j, k]
 
 
 '''
@@ -71,7 +70,7 @@ def backtrack_nonrec(T, str_A, str_B, str_C, sm, gc):
     k = len(str_C)
     while(i >= 0 and j >= 0 and k>= 0):
         cell = T[i, j, k]
-        # Diagonal cell - substitution
+        # "Diagonal cell"
         if (i > 0 and j > 0 and k > 0 and cell == T[i-1, j-1, k-1] + sm[str_A[i-1]][str_B[j-1]] + sm[str_A[i-1]][str_C[k-1]] + sm[str_B[j-1]][str_C[k-1]]):
             res_str_A += str_A[i-1]
             res_str_B += str_B[j-1]
@@ -79,44 +78,42 @@ def backtrack_nonrec(T, str_A, str_B, str_C, sm, gc):
             i -= 1
             j -= 1
             k -= 1
-        # Upper cell - insertion
-        elif (i > 0 and j > 0 and k>= 0 and cell == T[i-1, j-1, k] + sm[str_A[i-1]][str_B[j-1]] + 2*gc):
+        # "Above cell"
+        elif (i > 0 and j > 0 and k >= 0 and cell == T[i-1, j-1, k] + sm[str_A[i-1]][str_B[j-1]] + 2*gc):
             res_str_A += str_A[i-1]
             res_str_B += str_B[j-1]
             res_str_C += "-"
             i -= 1
             j -= 1
-
-        elif (i > 0 and j >= 0 and k> 0 and cell == T[i-1, j, k-1] + sm[str_A[i-1]][str_C[k-1]] + 2*gc):
+        elif (i > 0 and j >= 0 and k > 0 and cell == T[i-1, j, k-1] + sm[str_A[i-1]][str_C[k-1]] + 2*gc):
             res_str_A += str_A[i-1]
             res_str_B += "-"
             res_str_C += str_C[k-1]
             i -= 1
             k -= 1
-        elif (i >= 0 and j > 0 and k> 0 and cell == T[i, j-1, k-1] + sm[str_B[j-1]][str_C[k-1]] + 2*gc):
+        elif (i >= 0 and j > 0 and k > 0 and cell == T[i, j-1, k-1] + sm[str_B[j-1]][str_C[k-1]] + 2*gc):
             res_str_A += "-"
             res_str_B += str_B[j-1]
             res_str_C += str_C[k-1]
             j -= 1
             k -= 1
-
-        elif (i > 0 and j >= 0 and k>= 0 and cell == T[i-1, j, k] + 2*gc):
+        elif (i > 0 and j >= 0 and k >= 0 and cell == T[i-1, j, k] + 2*gc):
             res_str_A += str_A[i-1]
             res_str_B += "-"
             res_str_C += "-"
             i -= 1
-        elif (i >= 0 and j > 0 and k>= 0 and cell == T[i, j-1, k] + 2*gc):
+        elif (i >= 0 and j > 0 and k >= 0 and cell == T[i, j-1, k] + 2*gc):
             res_str_A += "-"
             res_str_B += str_B[j-1]
             res_str_C += "-"
             j -= 1
-        elif (i >= 0 and j >= 0 and k> 0 and cell == T[i, j, k-1] + 2*gc):
+        elif (i >= 0 and j >= 0 and k > 0 and cell == T[i, j, k-1] + 2*gc):
             res_str_A += "-"
             res_str_B += "-"
             res_str_C += str_C[k-1]
             k -= 1
-
-        elif (i==0 and j==0 and k==0):
+		# If we have backracked all the way to the first entry
+        elif (i == 0 and j == 0 and k == 0):
             return [res_str_A[::-1], res_str_B[::-1], res_str_C[::-1]]
 
 
