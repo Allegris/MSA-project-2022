@@ -151,12 +151,18 @@ def print_alignment_to_file(seq_list):
 
 
 
-# Code we run from command line
+##########################################################################
+# Code to run
+##########################################################################
+
+# Run from command line:
+# python msa_approx.py sub_m.txt 5 brca.fasta
+# Remenber to edit Storm's script, msa_sp_score_3k.py, to use the same sub_matrix and gap_cost
+
 # Get sub matrix, gap cost, and sequences from command line variables
 sub_matrix = parse_phylip(sys.argv[1])
 gap_cost = int(sys.argv[2])
 S = read_fasta_file(sys.argv[3])
-
 
 # Get letters specified in substitution matrix file
 letters = parse_phylip(sys.argv[1], True)

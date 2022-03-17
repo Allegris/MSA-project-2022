@@ -127,7 +127,6 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 # Code to run
 ##########################################################################
 
-
 # Run from command line:
 # python mst_msa_approx.py sub_m.txt 5 brca.fasta True
 # (use False if center string should not be used as start node in MST, but rather just the first string in node_strings)
@@ -157,7 +156,6 @@ if(all((c in letters for c in s) for s in node_strings)):
     print(sp_score_msa.compute_sp_score("alignment.fasta"))
 else:
     print("Error: A letter in a sequence is not specified in the substitution matrix.")
-
 
 
 '''

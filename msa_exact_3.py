@@ -122,12 +122,10 @@ def backtrack_nonrec(T, str_A, str_B, str_C, sm, gc):
 # Code to run
 ##########################################################################
 
-
 # Run from command line:
 # python msa_exact_3.py sub_m.txt 5 brca.fasta True
 # (use False if we just want to print the score of the MSA using the matrix T, and not use Storm's script (and backtracking) for this)
 # Remenber to edit Storm's script, msa_sp_score_3k.py, to use the same sub_matrix and gap_cost
-
 
 # Get sub matrix, gap cost, and sequences from command line variables
 sub_matrix = fp.parse_phylip(sys.argv[1])
