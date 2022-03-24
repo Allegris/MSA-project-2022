@@ -25,6 +25,7 @@ Returns the MSA
 '''
 def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string):
     MST_pairs_to_align = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
+    print("MST edges ordered (pairs to align):", MST_pairs_to_align)
     M = []
 	# Contains, for string index i, the row index in M that corresponds to this string
 	# This is later used for sorting the rows in M s.t. the string with index 0 is first, then index 1, etc.
@@ -123,6 +124,20 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 	return M
 
 
+def induced_pair_score(seq_1, seq_2):
+	res_1, res_2 = "", ""
+	for i in range(len(seq_1)):
+		if seq_1[i] == "-" and seq_2[i] == "-":
+			continue
+		else:
+			res_1 += seq_1[i]
+			res_2 += seq_2[i]
+	fp.write_to_fasta_file([res_1, res_2])
+	# Compute the score of the induced alignment
+	pair_score = sp_score_msa.compute_sp_score("alignment.fasta")
+	return pair_score
+
+
 ##########################################################################
 # Code to run
 ##########################################################################
@@ -141,6 +156,7 @@ use_center_string = bool(sys.argv[4]) # Should center string be used as start no
 
 # Assign indices to the strings in node_strings
 nodes = list(range(len(node_strings)))
+#print("Sequences:", node_strings, "\nSequence indices:", nodes)
 
 # Get letters specified in substitution matrix file
 letters = fp.parse_phylip(sys.argv[1], True)
@@ -153,7 +169,28 @@ if(all((c in letters for c in s) for s in node_strings)):
     fp.write_to_fasta_file(seqs)
 	# Print the SP score of the MSA, using Storm's script
 	# Note that the command line specified sub_matrix and gap_cost should correspond to those in Storm's script
-    print(sp_score_msa.compute_sp_score("alignment.fasta"))
+    print("Score of alignment:", sp_score_msa.compute_sp_score("alignment.fasta"))
+
+    '''
+    # CORRECTNESS TEST: Are scores the same for induced pair alignments and pair alignments of pairs in MST?
+    tests_true = True
+    mst = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
+    for pair in mst:
+        str_1 = node_strings[pair[0]]
+        str_2 = node_strings[pair[1]]
+        pair_score = pa.calculate_alignment_matrix(sub_matrix, gap_cost, str_1, str_2)[len(str_1), len(str_2)]
+        induced_score = induced_pair_score(seqs[pair[0]], seqs[pair[1]])
+        if(induced_score == pair_score):
+            #print("Scores ARE the same for", pair[0], "and", pair[1])
+            tests_true = True
+        else:
+            test_true = False
+            #print("*Scores are NOT the same for", pair[0], "and", pair[1], "....")
+            #print("Score OPT:", pair_score)
+            #print("Score induced:", induced_score)
+    print("***DID ALL TESTS SUCCEED:", tests_true)
+    '''
+
 else:
     print("Error: A letter in a sequence is not specified in the substitution matrix.")
 

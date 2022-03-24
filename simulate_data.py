@@ -61,8 +61,8 @@ def print_seqs_to_file(seq_list, i):
 ##########################################################################
 
 
-n = 1000
-k = 10
+n = 100
+k = 5
 anc = common_ancestor(n)
 sub_rate = 0.1
 indel_rate = sub_rate / 5

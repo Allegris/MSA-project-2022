@@ -102,7 +102,7 @@ def find_center_string_index(score_matrix):
 
 
 ##### Code to run #####
-
+'''
 #sub_matrix = {"A": {"A": 5, "C": 5, "G": 5, "T": 5}, "C": {"A": 5, "C": 5, "G": 5, "T": 5}, "G": {"A": 5, "C": 5, "G": 5, "T": 5}, "T": {"A": 5, "C": 5, "G": 5, "T": 5}}
 sub_matrix = {"A": {"A": 10, "C": 2, "G": 5, "T": 2}, "C": {"A": 2, "C": 10, "G": 2, "T": 5}, "G": {"A": 5, "C": 2, "G": 10, "T": 2}, "T": {"A": 2, "C": 5, "G": 2, "T": 10}}
 gap_cost = 5
@@ -110,7 +110,7 @@ gap_cost = 5
 node_strings = ["AACG", "AAAA", "CCCC", "GGGG"]
 nodes = list(range(len(node_strings)))
 print(MST_prim(nodes, node_strings, sub_matrix, gap_cost, True))
-
+'''
 
 
 
