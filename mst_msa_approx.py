@@ -1,5 +1,5 @@
 import sys
-import prim_new as prim
+import prim
 import project2_linear as pa # Pairwise alignment / SP score
 import msa_sp_score_3k as sp_score_msa # Storm's script
 import fasta_and_phylip as fp # Helper functions for reading/writing/parsing fasta and phylip files
