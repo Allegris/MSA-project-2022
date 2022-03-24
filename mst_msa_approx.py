@@ -1,5 +1,5 @@
 import sys
-import prim
+import prim_new as prim
 import project2_linear as pa # Pairwise alignment / SP score
 import msa_sp_score_3k as sp_score_msa # Storm's script
 import fasta_and_phylip as fp # Helper functions for reading/writing/parsing fasta and phylip files
@@ -23,8 +23,8 @@ Computes a multiple sequence alignment (MSA) of the input nodes by:
 
 Returns the MSA
 '''
-def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string):
-    MST_pairs_to_align = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
+def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost):
+    MST_pairs_to_align = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost)
     print("MST edges ordered (pairs to align):", MST_pairs_to_align)
     M = []
 	# Contains, for string index i, the row index in M that corresponds to this string
@@ -151,8 +151,6 @@ def induced_pair_score(seq_1, seq_2):
 sub_matrix = fp.parse_phylip(sys.argv[1])
 gap_cost = int(sys.argv[2])
 node_strings = fp.read_fasta_file(sys.argv[3])
-use_center_string = bool(sys.argv[4]) # Should center string be used as start node in MST?
-# TODO: It seems that finding the center string yields the same SP scores as when not, so maybe delete this option later...
 
 # Assign indices to the strings in node_strings
 nodes = list(range(len(node_strings)))
@@ -164,7 +162,7 @@ letters = fp.parse_phylip(sys.argv[1], True)
 # Check if sequences only contain allowed letters
 if(all((c in letters for c in s) for s in node_strings)):
     # Construct the MSA
-    seqs = MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
+    seqs = MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost)
 	# Write MSA to file "alignment.fasta"
     fp.write_to_fasta_file(seqs)
 	# Print the SP score of the MSA, using Storm's script
@@ -174,7 +172,7 @@ if(all((c in letters for c in s) for s in node_strings)):
     '''
     # CORRECTNESS TEST: Are scores the same for induced pair alignments and pair alignments of pairs in MST?
     tests_true = True
-    mst = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
+    mst = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost)
     for pair in mst:
         str_1 = node_strings[pair[0]]
         str_2 = node_strings[pair[1]]
@@ -205,10 +203,7 @@ gap_cost = 5
 node_strings = ["AACG", "AAAA", "CCCC", "GGGG"]
 nodes = list(range(len(node_strings)))
 
-# Should we use the center string as start node in MST
-use_center_string = True
-
-seqs = MSA_approx(nodes, node_strings, sub_matrix, gap_cost, use_center_string)
+seqs = MSA_approx(nodes, node_strings, sub_matrix, gap_cost)
 #print(seqs)
 
 print_alignment_to_file(seqs)
