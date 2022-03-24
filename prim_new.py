@@ -3,7 +3,6 @@ import numpy as np
 import project2_linear as pa #pairwise alignment / SP score
 
 
-def MST_prim
 
 def allowed_edge(u, v, in_MST):
 	# If nodes are the same, return false
@@ -22,28 +21,25 @@ def MST_prim_complete(nodes, node_strings, sub_matrix, gap_cost):
 	# Construct score matrix
 	cost = construct_score_matrix(nodes, node_strings, sub_matrix, gap_cost)
 	mst = [] # Will contain the MST
-	V = len(nodes) # Number of vertices in input graph
-	in_MST = [False] * V # Is a node of given index already in the MST
-	in_MST[0] = True # Let node 0 be the root of the MST
-	MST_edge_no = 0 # Number of edges currently in MST
-	# We want V-1 edges in the MST - when we have this, we are done
-	while MST_edge_no < V - 1:
+	in_MST = [0] # Is a node of given index already in the MST
+	not_in_MST = nodes.copy()
+	not_in_MST.remove(0)
+	# We want all nodes in the MST - when we have this, we are done
+	while len(not_in_MST) > 0:
 		min_cost = sys.maxsize # Min edge to MST
-		u, v = -1, -1
+		pair = (-1, -1)
 		# Check all possible edges (pair of nodes)
-		for i in range(V):
-			for j in range(V):
+		for u in in_MST:
+			for v in not_in_MST:
 				# If the edge has lower cost than min_cost
-				if cost[i][j] < min_cost:
-					# Check if one node is in MST and the other is not
-					if allowed_edge(i, j, in_MST):
-						min_cost = cost[i][j] # Update min_cost
-						u, v = i, j
-		if u != -1 and v != -1:
+				if cost[u][v] < min_cost:
+					min_cost = cost[u][v]
+					pair = (u, v)
+		if pair != (-1, -1):
 			# Add the found edge to MST
-			mst.append((u, v))
-			in_MST[u], in_MST[v] = True, True
-			MST_edge_no += 1 # We have added one more edge to MST
+			mst.append(pair)
+			in_MST.append(pair[1])
+			not_in_MST.remove(pair[1])
 	return mst
 
 
