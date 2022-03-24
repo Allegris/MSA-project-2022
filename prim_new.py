@@ -5,7 +5,7 @@ import project2_linear as pa #pairwise alignment / SP score
 
 # PRIM's algorithm for computing a minimum spanning tree for a set of strings, nodes
 # (nodes are the string indices, the actual strings can be accessed as node_strings[i] for i in nodes)
-def MST_prim_complete(nodes, node_strings, sub_matrix, gap_cost):
+def MST_prim(nodes, node_strings, sub_matrix, gap_cost):
 	# Construct score matrix
 	cost = construct_score_matrix(nodes, node_strings, sub_matrix, gap_cost)
 	mst = [] # Will contain the MST
