@@ -65,8 +65,7 @@ gap_cost = 5
 
 node_strings = ["AACG", "AAAA", "CCCC", "GGGG"]
 nodes = list(range(len(node_strings)))
-print(MST_prim(nodes, node_strings, sub_matrix, gap_cost, True))
-print(MST_prim_complete(nodes, node_strings, sub_matrix, gap_cost))
+print(MST_prim(nodes, node_strings, sub_matrix, gap_cost))
 
 
 
