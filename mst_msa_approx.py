@@ -122,7 +122,9 @@ def extend_M(M, pair_align, pair_idx, str_idx_to_row):
 	M.append(new_M_str)
 	return M
 
-
+# Function for testing
+# Input is two rows from alignment
+# Removes all gap columns from alignment and returns the SP-score of the resulting alignment
 def induced_pair_score(seq_1, seq_2):
 	res_1, res_2 = "", ""
 	for i in range(len(seq_1)):
