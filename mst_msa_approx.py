@@ -14,7 +14,6 @@ import fasta_and_phylip as fp # Helper functions for reading/writing/parsing fas
 Computes a multiple sequence alignment (MSA) of the input nodes by:
 
 - Computing a minimum spanning tree (MST) of the input nodes, using Prim's algorithm
-  (use_center_string is whether the "center string" should be used as start node in Prim's algorithm)
 
 - Uses this MST as a "guide tree" when doing an approximation algorithm much like Gusfield's 2-approximation algorithm,
   but where the matrix M is extended with the pairwise alignments in the order that they are added to the MST
@@ -143,8 +142,7 @@ def induced_pair_score(seq_1, seq_2):
 ##########################################################################
 
 # Run from command line:
-# python mst_msa_approx.py sub_m.txt 5 brca.fasta True
-# (use False if center string should not be used as start node in MST, but rather just the first string in node_strings)
+# python mst_msa_approx.py sub_m.txt 5 brca.fasta
 # Remenber to edit Storm's script, msa_sp_score_3k.py, to use the same sub_matrix and gap_cost
 
 # Get sub matrix, gap cost, and sequences from command line variables
