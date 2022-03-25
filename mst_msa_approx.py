@@ -25,7 +25,7 @@ Returns the MSA
 '''
 def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost):
     MST_pairs_to_align = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost)
-    #print("MST edges ordered (pairs to align):", MST_pairs_to_align)
+    print("MST edges ordered (pairs to align):", MST_pairs_to_align)
     M = []
 	# Contains, for string index i, the row index in M that corresponds to this string
 	# This is later used for sorting the rows in M s.t. the string with index 0 is first, then index 1, etc.
@@ -37,7 +37,7 @@ def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost):
         str_1 = node_strings[pair[0]]
         str_2 = node_strings[pair[1]]
 		# Make alignment matrix for the pair of strings
-        pair_align_matrix = pa.calculate_alignment_matrix(sub_matrix, gap_cost, str_1, str_2) # Score of alignment A
+        pair_align_matrix = pa.calculate_alignment_matrix(sub_matrix, gap_cost, str_1, str_2) # Alignment A
 		# Create an optimal alignment, by backtracking the matrix
         pair_opt_align = pa.backtrack_nonrec(pair_align_matrix, str_1, str_2, sub_matrix, gap_cost)
         if i == 0:
@@ -57,7 +57,8 @@ def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost):
     for i in range(len(str_idx_to_row)):
         row_idx = str_idx_to_row[i]
         sorted_M[i] = M[row_idx]
-    return sorted_M
+    #return sorted_M
+    return [M[i] for i in [1, 0, 2]]
 
 
 # Function for testing

@@ -47,8 +47,8 @@ def binary_choice(rate):
 	return choice([True, False], 1, [rate, 1 - rate])
 
 #Writes a fasta file with the aligned sequences
-def print_seqs_to_file(seq_list, i):
-	title = "test_seqs_" + str(i) + ".fasta"
+def print_seqs_to_file(path, seq_list, idx):
+	title = path + str(idx) + ".fasta"
 	x = open(title, "w")
 	for i in range(len(seq_list)):
 		x.write(">seq" + str(i+1) + "\n" + seq_list[i] + "\n")
@@ -62,16 +62,23 @@ def print_seqs_to_file(seq_list, i):
 
 
 n = 100
-k = 5
+k = 3
 anc = common_ancestor(n)
-sub_rate = 0.1
+sub_rate = 0.75 # 0.75 corresponds to random strings
 indel_rate = sub_rate / 5
-# descendant(anc, alpha, sub_rate, indel_rate)
+path = "simulated_data\\test_seqs_" # start of path to put sequences in
+idx = 1 # used in file name
+
+'''
+# Small test: will a division of the sequences in two clusters influence results
 desc1 = descendants(anc, alpha, sub_rate, indel_rate, k)
-
 desc2 = descendants(anc, alpha, sub_rate*5, indel_rate*5, k)
+print_seqs_to_file(path, desc1 + desc2, idx)
+'''
 
-print_seqs_to_file(desc1 + desc2, 1)
+for i in range(10):
+	d = descendants(anc, alpha, sub_rate, indel_rate, k)
+	print_seqs_to_file(path, seq_list = d, idx = i)
 
 
 

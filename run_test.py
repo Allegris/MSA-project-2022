@@ -2,8 +2,9 @@ import os
 from Bio import SeqIO
 import subprocess
 
-d = sorted(os.listdir("./testseqs"))
-
+#d = sorted(os.listdir("./testseqs"))
+folder = "simulated_data"
+d = sorted(os.listdir(folder))
 
 '''
 
@@ -21,12 +22,12 @@ mst_approx_score = []
 
 for file in d:
 	print(file)
-	result_gusfield = subprocess.check_output("python msa_approx.py sub_m.txt 5 ./testseqs/" + file + " True", shell=True, text=True)
+	result_gusfield = subprocess.check_output("python msa_approx.py sub_m.txt 5 " + folder + "\\" + file, shell=True, text=True)
 	approx_score.append(int(result_gusfield.strip()))
 	print("Gusfield: ", approx_score)
 	#print(result_gusfield.strip())
 
-	result_mst = subprocess.check_output("python mst_msa_approx.py sub_m.txt 5 ./testseqs/" + file, shell=True, text=True)
+	result_mst = subprocess.check_output("python mst_msa_approx.py sub_m.txt 5 " + folder + "\\" +  file, shell=True, text=True)
 	mst_approx_score.append(int(result_mst.strip()))
 	print("MST: ", mst_approx_score)
 	#print(result_mst.strip())

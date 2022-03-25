@@ -19,6 +19,7 @@ Returns the MSA
 '''
 #Fills out the M matrix with alignments found from backtracking
 def MSA_approx(S, center):
+    print("center: ", center)
     M = []
     S.remove(center)
     for s in S:
