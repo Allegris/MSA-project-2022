@@ -21,7 +21,7 @@ mst_approx_score = []
 
 for file in d:
 	print(file)
-	result_gusfield = subprocess.check_output("python msa_approx_new.py sub_m.txt 5 ./testseqs/" + file + " True", shell=True, text=True)
+	result_gusfield = subprocess.check_output("python msa_approx.py sub_m.txt 5 ./testseqs/" + file + " True", shell=True, text=True)
 	approx_score.append(int(result_gusfield.strip()))
 	print("Gusfield: ", approx_score)
 	#print(result_gusfield.strip())
