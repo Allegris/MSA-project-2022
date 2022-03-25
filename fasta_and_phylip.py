@@ -25,8 +25,8 @@ def read_fasta_file(filename):
 '''
 Writes the strings/sequences in seq_list to the file "alignment.fasta" with headers seq1, seq2 etc.
 '''
-def write_to_fasta_file(seq_list):
-    x = open("alignment.fasta", "w")
+def write_to_fasta_file(filename, seq_list):
+    x = open(filename, "w") # eg. "alignment.fasta"
     for i in range(len(seq_list)):
         x.write(">seq" + str(i+1) + "\n" + seq_list[i] + "\n")
     x.close()
