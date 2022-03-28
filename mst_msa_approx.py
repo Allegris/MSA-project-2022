@@ -25,7 +25,7 @@ Returns the MSA
 '''
 def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost):
     MST_pairs_to_align = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost)
-    print("MST edges ordered (pairs to align):", MST_pairs_to_align)
+    #print("MST edges ordered (pairs to align):", MST_pairs_to_align)
     M = []
 	# Contains, for string index i, the row index in M that corresponds to this string
 	# This is later used for sorting the rows in M s.t. the string with index 0 is first, then index 1, etc.
@@ -81,7 +81,7 @@ def induced_pair_score(seq_1, seq_2):
 ##########################################################################
 # Code to run
 ##########################################################################
-
+'''
 # Run from command line:
 # python mst_msa_approx.py sub_m.txt 5 brca.fasta
 # Remenber to edit Storm's script, msa_sp_score_3k.py, to use the same sub_matrix and gap_cost
@@ -108,7 +108,7 @@ if(all((c in letters for c in s) for s in node_strings)):
 	# Note that the command line specified sub_matrix and gap_cost should correspond to those in Storm's script
     print(sp_score_msa.compute_sp_score("alignment.fasta"))
 
-    '''
+
     # CORRECTNESS TEST: Are scores the same for induced pair alignments and pair alignments of pairs in MST?
     tests_true = True
     mst = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost)
@@ -126,11 +126,11 @@ if(all((c in letters for c in s) for s in node_strings)):
             #print("Score OPT:", pair_score)
             #print("Score induced:", induced_score)
     print("***DID ALL TESTS SUCCEED:", tests_true)
-    '''
+
 
 else:
     print("Error: A letter in a sequence is not specified in the substitution matrix.")
-
+'''
 
 '''
 # Example to run from this file (not a very good example, rather run from commandline)
