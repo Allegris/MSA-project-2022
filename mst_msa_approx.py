@@ -57,8 +57,8 @@ def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost):
     for i in range(len(str_idx_to_row)):
         row_idx = str_idx_to_row[i]
         sorted_M[i] = M[row_idx]
-    #return sorted_M
-    return [M[i] for i in [1, 0, 2]]
+    return sorted_M
+    # return [M[i] for i in [1, 0, 2]]
 
 
 # Function for testing
@@ -107,6 +107,7 @@ if(all((c in letters for c in s) for s in node_strings)):
 	# Print the SP score of the MSA, using Storm's script
 	# Note that the command line specified sub_matrix and gap_cost should correspond to those in Storm's script
     print(sp_score_msa.compute_sp_score("alignment.fasta"))
+
 
 
     # CORRECTNESS TEST: Are scores the same for induced pair alignments and pair alignments of pairs in MST?

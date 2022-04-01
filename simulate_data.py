@@ -76,10 +76,46 @@ desc2 = descendants(anc, alpha, sub_rate*5, indel_rate*5, k)
 print_seqs_to_file(path, desc1 + desc2, idx)
 '''
 
+'''
 for i in range(10):
 	d = descendants(anc, alpha, sub_rate, indel_rate, k)
 	print_seqs_to_file(path, seq_list = d, idx = i)
 
+'''
+for i in range(2, 21):
+	d = descendants(anc, alpha, sub_rate, indel_rate, i)
+	print_seqs_to_file(path, seq_list = d, idx = i)
+
+'''
+for i in range(0, 3):
+	d = descendants(anc, alpha, sub_rate, indel_rate, 3)
+	print_seqs_to_file(path, seq_list = d, idx = i)
+
+for i in range(3, 6):
+	d = descendants(anc, alpha, sub_rate, indel_rate, 5)
+	print_seqs_to_file(path, seq_list = d, idx = i)
+
+for i in range(6, 9):
+	d = descendants(anc, alpha, sub_rate, indel_rate, 8)
+	print_seqs_to_file(path, seq_list = d, idx = i)
+
+for i in range(9, 12):
+	d = descendants(anc, alpha, sub_rate, indel_rate, 11)
+	print_seqs_to_file(path, seq_list = d, idx = i)
+
+for i in range(12, 15):
+	d = descendants(anc, alpha, sub_rate, indel_rate, 14)
+	print_seqs_to_file(path, seq_list = d, idx = i)
+
+for i in range(15, 18):
+	d = descendants(anc, alpha, sub_rate, indel_rate, 17)
+	print_seqs_to_file(path, seq_list = d, idx = i)
+
+
+for i in range(18, 21):
+	d = descendants(anc, alpha, sub_rate, indel_rate, 20)
+	print_seqs_to_file(path, seq_list = d, idx = i)
+'''
 
 
 '''

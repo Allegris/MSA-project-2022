@@ -71,7 +71,7 @@ def find_center_string(S, sub_matrix, gap_cost):
 # Run from command line:
 # python msa_approx.py sub_m.txt 5 brca.fasta
 # Remenber to edit Storm's script, msa_sp_score_3k.py, to use the same sub_matrix and gap_cost
-
+'''
 # Get sub matrix, gap cost, and sequences from command line variables
 sub_matrix = fp.parse_phylip(sys.argv[1])
 gap_cost = int(sys.argv[2])
@@ -96,7 +96,7 @@ else:
     print("Error: A letter in a sequence is not specified in the substitution matrix.")
 
 
-
+'''
 ##########################################################################
 # Measure running time
 ##########################################################################
