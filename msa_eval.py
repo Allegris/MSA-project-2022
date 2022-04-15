@@ -34,12 +34,17 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 		if(all((c in letters for c in s) for s in S)):
 			##### MSA #####
 			S_idx = list(range(len(S)))
-			m_start = time.time() # Start timer
-			seqs = mst_algo.MST_MSA_approx(S_idx, S, sub_matrix, gap_cost)
-			m_end = time.time() # Stop timer
 
-			# Time
-			m_time = m_end - m_start #/((k**2)*(n**2))
+			# Run algo 10 times and use average running time
+			m_times = []
+			for i in range(10):
+				m_start = time.time() # Start timer
+				seqs = mst_algo.MST_MSA_approx(S_idx, S, sub_matrix, gap_cost)
+				m_end = time.time() # Stop timer
+				m_times.append(m_end - m_start)
+
+			# Average running time
+			m_time = sum(m_times)/(len(m_times))
 			m_time_list.append(m_time)
 
 			# Score
@@ -49,13 +54,16 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 
 
 			##### Gusfield #####
-			g_start = time.time() # Start timer
-			center = gusfield.find_center_string(S, sub_matrix, gap_cost)
-			seqs = gusfield.MSA_approx(S, center, sub_matrix, gap_cost)
-			g_end = time.time() # Stop timer
+			g_times = []
+			for i in range(10):
+				g_start = time.time() # Start timer
+				center = gusfield.find_center_string(S, sub_matrix, gap_cost)
+				seqs = gusfield.MSA_approx(S, center, sub_matrix, gap_cost)
+				g_end = time.time() # Stop timer
+				g_times.append(g_end - g_start)
 
-			# Time
-			g_time = g_end - g_start # /((k**2)*(n**2))
+			# Average running time
+			g_time = sum(g_times)/(len(g_times))
 			g_time_list.append(g_time)
 
 			# Score
@@ -65,10 +73,12 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 
 
 			# Differences between MST and Gusfield
+			'''
 			diff_score = ((g_score - m_score)/g_score)*100
 			score_diffs.append(diff_score)
 			diff_time = ((g_time - m_time)/g_time)*100
 			time_diffs.append(diff_time)
+			'''
 		else:
 			   print("Error: A letter in a sequence is not specified in the substitution matrix.")
 
