@@ -122,7 +122,7 @@ if(all((c in letters for c in s) for s in node_strings)):
             #print("Scores ARE the same for", pair[0], "and", pair[1])
             tests_true = True
         else:
-            test_true = False
+            tests_true = False
             #print("*Scores are NOT the same for", pair[0], "and", pair[1], "....")
             #print("Score OPT:", pair_score)
             #print("Score induced:", induced_score)

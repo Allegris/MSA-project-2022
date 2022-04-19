@@ -1,11 +1,14 @@
 import sys
 import os
 import time
+import prim
 import matplotlib.pyplot as plt
 import mst_msa_approx as mst_algo
 import msa_approx as gusfield
 import msa_sp_score_3k as sp_score_msa # Storm's script
 import fasta_and_phylip as fp
+import project2_linear as pa # Pairwise alignment / SP score
+
 
 
 # Returns: (n, k), score, time
@@ -32,9 +35,10 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 		letters = fp.parse_phylip(sub_matrix_filename, True) # Get letters specified in substitution matrix file
 		# Check if sequences only contain allowed letters
 		if(all((c in letters for c in s) for s in S)):
-			##### MSA #####
+
 			S_idx = list(range(len(S)))
 
+			##### MSA #####
 			# Run algo 10 times and use average running time
 			m_times = []
 			for i in range(10):
@@ -52,13 +56,34 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			m_score = sp_score_msa.compute_sp_score("alignment_" + str(k) +".fasta")
 			m_score_list.append(m_score)
 
+			'''
+			#CORRECTNESS TEST: Are scores the same for induced pair alignments and pair alignments of pairs in MST?
+			tests_true = True
+			mst = prim.MST_prim(S_idx, S, sub_matrix, gap_cost)
+			for pair in mst:
+			    str_1 = S[pair[0]]
+			    str_2 = S[pair[1]]
+			    pair_score = pa.calculate_alignment_matrix(sub_matrix, gap_cost, str_1, str_2)[len(str_1), len(str_2)]
+			    induced_score = induced_pair_score(seqs[pair[0]], seqs[pair[1]])
+			    if(induced_score == pair_score):
+			        #print("Scores ARE the same for", pair[0], "and", pair[1])
+			        tests_true = True
+			    else:
+			        tests_true = False
+			        #print("*Scores are NOT the same for", pair[0], "and", pair[1], "....")
+			        #print("Score OPT:", pair_score)
+			        #print("Score induced:", induced_score)
+			print("***DID ALL TESTS SUCCEED:", tests_true)
+
+
+			'''
 
 			##### Gusfield #####
 			g_times = []
-			for i in range(10):
+			for _ in range(10):
 				g_start = time.time() # Start timer
-				center = gusfield.find_center_string(S, sub_matrix, gap_cost)
-				seqs = gusfield.MSA_approx(S, center, sub_matrix, gap_cost)
+				center = gusfield.find_center_string(S.copy(), sub_matrix, gap_cost)
+				seqs = gusfield.MSA_approx(S.copy(), center, sub_matrix, gap_cost)
 				g_end = time.time() # Stop timer
 				g_times.append(g_end - g_start)
 
@@ -109,6 +134,23 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	return score_diffs, time_diffs #(n, k), diff_score, diff_time
 
 
+# Function for testing
+# Input is two rows from alignment
+# Removes all gap columns from alignment and returns the SP-score of the resulting alignment
+def induced_pair_score(seq_1, seq_2):
+	res_1, res_2 = "", ""
+	for i in range(len(seq_1)):
+		if seq_1[i] == "-" and seq_2[i] == "-":
+			continue
+		else:
+			res_1 += seq_1[i]
+			res_2 += seq_2[i]
+	fp.write_to_fasta_file("alignment.fasta", [res_1, res_2])
+	# Compute the score of the induced alignment
+	pair_score = sp_score_msa.compute_sp_score("alignment.fasta")
+	return pair_score
+
+
 
 ##########################################################################
 # Code to run
@@ -122,12 +164,19 @@ mst = bool(sys.argv[3])
 # Assign indices to the strings in node_strings
 S_idx = list(range(len(S)))
 '''
+
+# Run from command line:
+#
+
 folder = "simulated_data"
 sub_matrix_filename = "sub_m.txt"
 gap_cost = 5
-n = 1000
+n = 100
 
 print(evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n))
+
+
+
 
 #mst_res = evaluate_MSA_algo(S_idx, S, sub_matrix, gap_cost, True)
 #gusfield_res = evaluate_MSA_algo(S_idx, S, sub_matrix, gap_cost, False)

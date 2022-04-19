@@ -40,43 +40,42 @@ The center string is the sequences with lowest alignments score to the other seq
 '''
 def find_center_string(S, sub_matrix, gap_cost):
     # Contains pairwise distances from s to s
-    score_matrix = np.full((len(S), len(S)), None)
+	score_matrix = np.full((len(S), len(S)), None)
     # Distances from s to s is 0
-    for i in range(len(S)):
-        score_matrix[i, i] = 0
+	for i in range(len(S)):
+		score_matrix[i, i] = 0
     # Iterate through possible centers, S[i]
-    for i in range(len(S)):
+	for i in range(len(S)):
         # Score for S[i]
-        sum_scores = 0
+		sum_scores = 0
         # Iterate through all other strings, S[j]
-        for j in range(len(S)):
+		for j in range(len(S)):
             # If we have NOT already computed the distance from S[i] to S[j], do this
-            if(score_matrix[i, j] == None):
-                score = pa.calculate_alignment_matrix(sub_matrix, gap_cost, S[i], S[j])[len(S[i]), len(S[j])]
+			if(score_matrix[i, j] == None):
+				score = pa.calculate_alignment_matrix(sub_matrix, gap_cost, S[i], S[j])[len(S[i]), len(S[j])]
                 # Distance from S[i] to S[j] is equal to the distance from S[j] to S[i]
-                score_matrix[i, j] = score
-                score_matrix[j, i] = score
-            sum_scores += score_matrix[i, j]
+				score_matrix[i, j] = score
+				score_matrix[j, i] = score
+			sum_scores += score_matrix[i, j]
     # Calculate total scores for S[i]'s
-    total_scores = [sum(score) for score in score_matrix]
+	total_scores = [sum(score) for score in score_matrix]
     # The min score index
-    best_score_index = np.argmin(total_scores)
+	best_score_index = np.argmin(total_scores)
     # Return string with min score (= center)
-    return S[best_score_index]
+	return S[best_score_index]
 
 ##########################################################################
 # Code to run
 ##########################################################################
-
+'''
 # Run from command line:
 # python msa_approx.py sub_m.txt 5 brca.fasta
 # Remenber to edit Storm's script, msa_sp_score_3k.py, to use the same sub_matrix and gap_cost
-'''
+
 # Get sub matrix, gap cost, and sequences from command line variables
 sub_matrix = fp.parse_phylip(sys.argv[1])
 gap_cost = int(sys.argv[2])
 S = fp.read_fasta_file(sys.argv[3])
-max_len = len(max(S, key = len)) # Longest string in S, i.e. "n"
 
 # Get letters specified in substitution matrix file
 letters = fp.parse_phylip(sys.argv[1], True)
@@ -95,8 +94,8 @@ if(all((c in letters for c in s) for s in S)):
 else:
     print("Error: A letter in a sequence is not specified in the substitution matrix.")
 
-
 '''
+
 ##########################################################################
 # Measure running time
 ##########################################################################
