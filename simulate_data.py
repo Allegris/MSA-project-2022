@@ -1,4 +1,5 @@
 from numpy.random import choice
+import numpy
 
 alpha = ["A", "C", "G", "T"]
 probs = [0.25] * len(alpha)
@@ -6,7 +7,7 @@ probs = [0.25] * len(alpha)
 
 
 def common_ancestor(n):
-	return "".join(choice(alpha, n, probs))
+	return "".join(choice(alpha, n, p=probs))
 
 def descendants(anc, alpha, sub_rate, indel_rate, k):
 	res = []
@@ -44,7 +45,7 @@ def random_symbol(alpha):
 	return "".join(choice(alpha, 1))
 
 def binary_choice(rate):
-	return choice([True, False], 1, [rate, 1 - rate])
+	return choice([True, False], 1, p=[rate, 1 - rate])
 
 #Writes a fasta file with the aligned sequences
 def print_seqs_to_file(path, seq_list, idx):
@@ -65,7 +66,7 @@ n = 100
 k = 3
 anc = common_ancestor(n)
 sub_rate = 0.75 # 0.75 corresponds to random strings
-indel_rate = sub_rate / 5
+indel_rate = 0#sub_rate / 5
 path = "simulated_data\\test_seqs_" # start of path to put sequences in
 idx = 1 # used in file name
 
@@ -77,50 +78,19 @@ print_seqs_to_file(path, desc1 + desc2, idx)
 '''
 
 '''
-for i in range(10):
-	d = descendants(anc, alpha, sub_rate, indel_rate, k)
-	print_seqs_to_file(path, seq_list = d, idx = i)
-
+anc1 = common_ancestor(n)
+anc2 = descendant(anc1, alpha, sub_rate = 1, indel_rate = 0)
+#anc2 = common_ancestor(n)
+#anc2 = descendant(anc1, alpha, sub_rate = 1, indel_rate = 0.25) #"A" * n
+for i in range(1, 11):
+	d1 = descendants(anc1, alpha, sub_rate, indel_rate, i)
+	d2 = descendants(anc2, alpha, sub_rate, indel_rate, i)
+	print_seqs_to_file(path, d1 + d2 + [anc2], idx = i*2)
 '''
+
+
 for i in range(2, 21):
 	d = descendants(anc, alpha, sub_rate, indel_rate, i)
 	print_seqs_to_file(path, seq_list = d, idx = i)
 
-'''
-for i in range(0, 3):
-	d = descendants(anc, alpha, sub_rate, indel_rate, 3)
-	print_seqs_to_file(path, seq_list = d, idx = i)
-
-for i in range(3, 6):
-	d = descendants(anc, alpha, sub_rate, indel_rate, 5)
-	print_seqs_to_file(path, seq_list = d, idx = i)
-
-for i in range(6, 9):
-	d = descendants(anc, alpha, sub_rate, indel_rate, 8)
-	print_seqs_to_file(path, seq_list = d, idx = i)
-
-for i in range(9, 12):
-	d = descendants(anc, alpha, sub_rate, indel_rate, 11)
-	print_seqs_to_file(path, seq_list = d, idx = i)
-
-for i in range(12, 15):
-	d = descendants(anc, alpha, sub_rate, indel_rate, 14)
-	print_seqs_to_file(path, seq_list = d, idx = i)
-
-for i in range(15, 18):
-	d = descendants(anc, alpha, sub_rate, indel_rate, 17)
-	print_seqs_to_file(path, seq_list = d, idx = i)
-
-
-for i in range(18, 21):
-	d = descendants(anc, alpha, sub_rate, indel_rate, 20)
-	print_seqs_to_file(path, seq_list = d, idx = i)
-'''
-
-
-'''
-print("anc:", anc)
-for i in range(len(desc)):
-	print("desc:", i, ":", desc[i])
-'''
 

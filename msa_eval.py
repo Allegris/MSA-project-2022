@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+import numpy as np
 import prim
 import matplotlib.pyplot as plt
 import mst_msa_approx as mst_algo
@@ -17,14 +18,17 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	d = sorted(os.listdir(folder))
 
 	k_list = []
-	score_diffs = []
-	time_diffs = []
 
 	g_score_list = []
 	m_score_list = []
 
+	p_time_list = [] # prims algo only
 	g_time_list = []
 	m_time_list = []
+
+	p_exptime_list = [] # prims algo only
+	g_exptime_list = []
+	m_exptime_list = []
 
 	for filename in d:
 		print(filename)
@@ -37,6 +41,24 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 		if(all((c in letters for c in s) for s in S)):
 
 			S_idx = list(range(len(S)))
+
+			##### PRIM ALGO ONLY #####
+			'''
+			p_times = []
+			for i in range(10):
+				p_start = time.time() # Start timer
+				prim.MST_prim(S_idx, S, sub_matrix, gap_cost)
+				p_end = time.time() # Stop timer
+				p_times.append(p_end - p_start)
+			# Average running time
+			p_time = sum(p_times)/(len(p_times))
+			# Min time, not currently used
+			#p_time = min(p_times)
+			p_time_list.append(p_time)
+
+			# Expected runningtime: time / k^2
+			p_exptime_list.append(p_time/(k**2))
+			'''
 
 			##### MSA #####
 			# Run algo 10 times and use average running time
@@ -51,10 +73,14 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			m_time = sum(m_times)/(len(m_times))
 			m_time_list.append(m_time)
 
+			# Expected runningtime: time / k^2
+			m_exptime_list.append(m_time/((k**2)*(n**2)))
+
 			# Score
 			fp.write_to_fasta_file("alignment_" + str(k) +".fasta", seqs)
 			m_score = sp_score_msa.compute_sp_score("alignment_" + str(k) +".fasta")
 			m_score_list.append(m_score)
+
 
 			'''
 			#CORRECTNESS TEST: Are scores the same for induced pair alignments and pair alignments of pairs in MST?
@@ -74,9 +100,10 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			        #print("Score OPT:", pair_score)
 			        #print("Score induced:", induced_score)
 			print("***DID ALL TESTS SUCCEED:", tests_true)
-
-
 			'''
+
+
+
 
 			##### Gusfield #####
 			g_times = []
@@ -91,48 +118,96 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			g_time = sum(g_times)/(len(g_times))
 			g_time_list.append(g_time)
 
+			# Expected runningtime: time / k^2
+			g_exptime_list.append(g_time/((k**2)*(n**2)))
+
 			# Score
 			fp.write_to_fasta_file("alignment.fasta", seqs)
 			g_score = sp_score_msa.compute_sp_score("alignment.fasta")
 			g_score_list.append(g_score)
 
 
-			# Differences between MST and Gusfield
-			'''
-			diff_score = ((g_score - m_score)/g_score)*100
-			score_diffs.append(diff_score)
-			diff_time = ((g_time - m_time)/g_time)*100
-			time_diffs.append(diff_time)
-			'''
 		else:
 			   print("Error: A letter in a sequence is not specified in the substitution matrix.")
+
+	'''
+	# Prim time plot
+	print("Time for n = ", n)
+	plt.scatter(k_list, p_time_list, color = "green") # Prim times
+	plt.xticks(range(1,31))
+	plt.title("n = " + str(n))
+	plt.xlabel("Number of sequences, k", fontsize = 13)
+	plt.ylabel("Time (sec)", fontsize = 13)
+	plt.savefig('res_prim_time_random_n' + str(n) + '_kmax20.png')
+	plt.show()
+	plt.clf() # Clear plot
+
+	# Prim expected time plot
+	print("Time for n = ", n)
+	plt.scatter(k_list, p_exptime_list, color = "green") # Prim times
+	plt.xticks(range(1,31))
+	plt.title("n = " + str(n))
+	plt.xlabel("Number of sequences, k", fontsize = 13)
+	plt.ylabel("Time (sec) / k^2", fontsize = 13)
+	plt.savefig('res_prim_exptime_random_n' + str(n) + '_kmax20.png')
+	plt.show()
+	plt.clf() # Clear plot
+	'''
 
 
 	# Time plot
 	print("Time for n = ", n)
-	plt.scatter(k_list, g_time_list, color = "red") # Gusfield times
-	plt.scatter(k_list, m_time_list, color="blue") # MST times
-	#plt.xticks(range(1,20))
+	plt.scatter(k_list, g_time_list, color = "red", alpha = 0.5) # Gusfield times
+	plt.scatter(k_list, m_time_list, color="blue", alpha = 0.5) # MST times
+	plt.xticks(range(1,21))
+	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec)", fontsize = 13)
-	plt.savefig('res_time_random_n100_kmax20.png')
+	plt.savefig('res_time_random_n' + str(n) + '_kmax20.png')
 	plt.show()
+	plt.clf() # Clear plot
 
-	# Clear plot
-	plt.clf()
+	# Expected time plot
+	print("Time/(k^2*n^2) for n = ", n)
+	plt.scatter(k_list, g_exptime_list, color = "red", alpha = 0.5) # Gusfield times
+	plt.scatter(k_list, m_exptime_list, color="blue", alpha = 0.5) # MST times
+	plt.xticks(range(1,21))
+	#plt.ylim(0, 0.005)
+	plt.title("n = " + str(n))
+	plt.xlabel("Number of sequences, k", fontsize = 13)
+	plt.ylabel("Time (sec) / k^2*n^2", fontsize = 13)
+	plt.savefig('res_exptime_random_n' + str(n) + '_kmax20.png')
+	plt.show()
+	plt.clf() # Clear plot
 
 	# Score plot
 	print("Score for n = ", n)
-	plt.scatter(k_list, g_score_list, color = "red") # Gusfield scores
-	plt.scatter(k_list, m_score_list, color="blue") # MST scores
-	#plt.xticks(range(1,20))
+	plt.scatter(k_list, g_score_list, color = "red", alpha = 0.5) # Gusfield scores
+	plt.scatter(k_list, m_score_list, color="blue", alpha = 0.5) # MST scores
+	plt.xticks(range(1,21))
+	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("SP-score", fontsize = 13)
-	plt.savefig('res_score_random_n100_kmax20.png')
+	plt.savefig('res_score_random_n' + str(n) + '_kmax20.png')
 	plt.show()
 
-	return score_diffs, time_diffs #(n, k), diff_score, diff_time
+	# Differences between MST and Gusfield
+	# List of S_m / S_g
+	m_g_frac_score = [m_score_list[i]/g_score_list[i] for i in range(len(g_score_list))  if g_score_list[i] != 0.0]
+	# List of T_m / T_g
+	m_g_frac_time = [m_time_list[i]/g_time_list[i] for i in range(len(g_time_list)) if g_time_list[i] != 0.0]
 
+	score_frac_avg = np.average(m_g_frac_score)
+	score_frac_var = np.var(m_g_frac_score)
+	time_frac_avg = np.average(m_g_frac_time)
+	time_frac_var = np.var(m_g_frac_time)
+
+	x = open('res_score_random_n' + str(n) + '_kmax20.txt', "w")
+	x.write("S_m/S_g average: " + str(score_frac_avg) + "\nS_m/S_g variance: " + str(score_frac_var) +
+		 "\nT_m/T_g average: " + str(time_frac_avg) + "\nT_m/T_g variance: " + str(time_frac_var))
+	x.close()
+
+	return score_frac_avg, score_frac_var, time_frac_avg, time_frac_var
 
 # Function for testing
 # Input is two rows from alignment
@@ -165,8 +240,6 @@ mst = bool(sys.argv[3])
 S_idx = list(range(len(S)))
 '''
 
-# Run from command line:
-#
 
 folder = "simulated_data"
 sub_matrix_filename = "sub_m.txt"
