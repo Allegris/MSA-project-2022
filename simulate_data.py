@@ -62,7 +62,7 @@ def print_seqs_to_file(path, seq_list, idx):
 ##########################################################################
 
 
-n = 100
+n = 10
 k = 3
 anc = common_ancestor(n)
 sub_rate = 0.75 # 0.75 corresponds to random strings
@@ -77,7 +77,7 @@ desc2 = descendants(anc, alpha, sub_rate*5, indel_rate*5, k)
 print_seqs_to_file(path, desc1 + desc2, idx)
 '''
 
-'''
+
 anc1 = common_ancestor(n)
 anc2 = descendant(anc1, alpha, sub_rate = 1, indel_rate = 0)
 #anc2 = common_ancestor(n)
@@ -86,11 +86,11 @@ for i in range(1, 11):
 	d1 = descendants(anc1, alpha, sub_rate, indel_rate, i)
 	d2 = descendants(anc2, alpha, sub_rate, indel_rate, i)
 	print_seqs_to_file(path, d1 + d2 + [anc2], idx = i*2)
+
+
 '''
-
-
 for i in range(2, 21):
 	d = descendants(anc, alpha, sub_rate, indel_rate, i)
 	print_seqs_to_file(path, seq_list = d, idx = i)
-
+'''
 

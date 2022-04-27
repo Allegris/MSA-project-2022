@@ -244,7 +244,7 @@ S_idx = list(range(len(S)))
 folder = "simulated_data"
 sub_matrix_filename = "sub_m.txt"
 gap_cost = 5
-n = 100
+n = 10
 
 print(evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n))
 
