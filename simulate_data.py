@@ -75,8 +75,10 @@ print_seqs_to_file(path, desc1 + desc2, idx)
 '''
 
 '''
+OLD CODE
 anc1 = common_ancestor(n)
-anc2 = descendant(anc1, alpha, sub_rate = 1, indel_rate = 0)
+anc2 = common_ancestor(n)
+#anc2 = descendant(anc1, alpha, sub_rate = 1, indel_rate = 0)
 #anc2 = common_ancestor(n)
 #anc2 = descendant(anc1, alpha, sub_rate = 1, indel_rate = 0.25) #"A" * n
 for i in range(1, 11):
@@ -85,12 +87,23 @@ for i in range(1, 11):
 	print_seqs_to_file(path, d1 + d2 + [anc2], n, k = i*2)
 '''
 
+
+for n in ns:
+	anc1 = common_ancestor(n)
+	anc2 = common_ancestor(n)
+	for k in range(1, 11):
+		d1 = descendants(anc1, alpha, sub_rate, indel_rate, k)
+		d2 = descendants(anc2, alpha, sub_rate, indel_rate, k)
+		print_seqs_to_file(d1 + d2, n, k*2)
+
+'''
+
 for n in ns:
 	anc = common_ancestor(n)
 	for k in range(2, 21):
 		d = descendants(anc, alpha, sub_rate, indel_rate, k)
 		print_seqs_to_file(d, n, k)
-
+'''
 
 
 
