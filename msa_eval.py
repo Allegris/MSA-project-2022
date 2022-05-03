@@ -43,9 +43,9 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			S_idx = list(range(len(S)))
 
 			##### PRIM ALGO ONLY #####
-			'''
+
 			p_times = []
-			for i in range(10):
+			for i in range(5):
 				p_start = time.time() # Start timer
 				prim.MST_prim(S_idx, S, sub_matrix, gap_cost)
 				p_end = time.time() # Stop timer
@@ -58,12 +58,12 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 
 			# Expected runningtime: time / k^2
 			p_exptime_list.append(p_time/(k**2))
-			'''
+
 
 			##### MSA #####
 			# Run algo 10 times and use average running time
 			m_times = []
-			for i in range(10):
+			for i in range(5):
 				m_start = time.time() # Start timer
 				seqs = mst_algo.MST_MSA_approx(S_idx, S, sub_matrix, gap_cost)
 				m_end = time.time() # Stop timer
@@ -130,11 +130,11 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 		else:
 			   print("Error: A letter in a sequence is not specified in the substitution matrix.")
 
-	'''
+
 	# Prim time plot
 	print("Time for n = ", n)
 	plt.scatter(k_list, p_time_list, color = "green") # Prim times
-	plt.xticks(range(1,31))
+	plt.xticks(range(1,21))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec)", fontsize = 13)
@@ -145,14 +145,14 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	# Prim expected time plot
 	print("Time for n = ", n)
 	plt.scatter(k_list, p_exptime_list, color = "green") # Prim times
-	plt.xticks(range(1,31))
+	plt.xticks(range(1,21))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec) / k^2", fontsize = 13)
 	plt.savefig('res_prim_exptime_random_n' + str(n) + '_kmax20.png')
 	plt.show()
 	plt.clf() # Clear plot
-	'''
+
 
 
 	# Time plot
@@ -241,12 +241,17 @@ S_idx = list(range(len(S)))
 '''
 
 
-folder = "simulated_data"
+#folder = "simulated_data"
 sub_matrix_filename = "sub_m.txt"
 gap_cost = 5
-n = 10
+#n = 10
 
-print(evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n))
+ns = [10, 50, 100, 150]
+
+for n in ns:
+	print("**************N:", n)
+	folder = "simulated_data\\n" + str(n)
+	print(evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n))
 
 
 
