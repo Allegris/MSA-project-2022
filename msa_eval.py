@@ -172,11 +172,11 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	plt.scatter(k_list, g_exptime_list, color = "red", alpha = 0.5) # Gusfield times
 	plt.scatter(k_list, m_exptime_list, color="blue", alpha = 0.5) # MST times
 	plt.xticks(range(1,21))
-	#plt.ylim(0, 0.005)
+	plt.ylim(-0.005, 0.005)
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec) / k^2*n^2", fontsize = 13)
-	plt.savefig('res_exptime_low2_n' + str(n) + '_kmax20.png')
+	plt.savefig('res_exptime_random_n' + str(n) + '_kmax20.png')
 	plt.show()
 	plt.clf() # Clear plot
 
