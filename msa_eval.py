@@ -21,14 +21,17 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 
 	g_score_list = []
 	m_score_list = []
+	og_score_list = []
 
 	p_time_list = [] # prims algo only
 	g_time_list = []
 	m_time_list = []
+	og_time_list = []
 
 	p_exptime_list = [] # prims algo only
 	g_exptime_list = []
 	m_exptime_list = []
+	og_exptime_list = []
 
 	for filename in d:
 		print(filename)
@@ -42,8 +45,8 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 
 			S_idx = list(range(len(S)))
 
+			'''
 			##### PRIM ALGO ONLY #####
-
 			p_times = []
 			for i in range(5):
 				p_start = time.time() # Start timer
@@ -58,10 +61,10 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 
 			# Expected runningtime: time / k^2
 			p_exptime_list.append(p_time/(k**2))
-
+			'''
 
 			##### MSA #####
-			# Run algo 10 times and use average running time
+			# Run algo 5 times and use average running time
 			m_times = []
 			for i in range(5):
 				m_start = time.time() # Start timer
@@ -102,6 +105,26 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			print("***DID ALL TESTS SUCCEED:", tests_true)
 			'''
 
+			##### Ordered Gusfield #####
+			og_times = []
+			for _ in range(10):
+				og_start = time.time() # Start timer
+				index_and_score = gusfield.ordered_gusfield(S.copy(), sub_matrix, gap_cost)
+				seqs = 	gusfield.MSA_approx_ordered_gusfield(S.copy(), index_and_score, sub_matrix, gap_cost)
+				og_end = time.time() # Stop timer
+				og_times.append(og_end - og_start)
+
+			# Average running time
+			og_time = sum(og_times)/(len(og_times))
+			og_time_list.append(og_time)
+
+			# Expected runningtime: time / k^2
+			og_exptime_list.append(og_time/((k**2)*(n**2)))
+
+			# Score
+			fp.write_to_fasta_file("alignment.fasta", seqs)
+			og_score = sp_score_msa.compute_sp_score("alignment.fasta")
+			og_score_list.append(og_score)
 
 
 
@@ -130,7 +153,7 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 		else:
 			   print("Error: A letter in a sequence is not specified in the substitution matrix.")
 
-
+	'''
 	# Prim time plot
 	print("Time for n = ", n)
 	plt.scatter(k_list, p_time_list, color = "green") # Prim times
@@ -152,18 +175,19 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	plt.savefig('res_prim_exptime_low2_n' + str(n) + '_kmax20.png')
 	plt.show()
 	plt.clf() # Clear plot
-
+	'''
 
 
 	# Time plot
 	print("Time for n = ", n)
 	plt.scatter(k_list, g_time_list, color = "red", alpha = 0.5) # Gusfield times
 	plt.scatter(k_list, m_time_list, color="blue", alpha = 0.5) # MST times
+	plt.scatter(k_list, og_time_list, color="green", alpha = 0.5) # ordered Gusfield times
 	plt.xticks(range(1,21))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec)", fontsize = 13)
-	plt.savefig('res_time_low2_n' + str(n) + '_kmax20.png')
+	plt.savefig('res_time_random_n' + str(n) + '_kmax20.png')
 	plt.show()
 	plt.clf() # Clear plot
 
@@ -171,6 +195,7 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	print("Time/(k^2*n^2) for n = ", n)
 	plt.scatter(k_list, g_exptime_list, color = "red", alpha = 0.5) # Gusfield times
 	plt.scatter(k_list, m_exptime_list, color="blue", alpha = 0.5) # MST times
+	plt.scatter(k_list, og_exptime_list, color="green", alpha = 0.5) # ordered Gusfield times
 	plt.xticks(range(1,21))
 	plt.ylim(-0.005, 0.005)
 	plt.title("n = " + str(n))
@@ -184,11 +209,12 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	print("Score for n = ", n)
 	plt.scatter(k_list, g_score_list, color = "red", alpha = 0.5) # Gusfield scores
 	plt.scatter(k_list, m_score_list, color="blue", alpha = 0.5) # MST scores
+	plt.scatter(k_list, og_score_list, color="green", alpha = 0.5) # ordered Gusfield times
 	plt.xticks(range(1,21))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("SP-score", fontsize = 13)
-	plt.savefig('res_score_low2_n' + str(n) + '_kmax20.png')
+	plt.savefig('res_score_random_n' + str(n) + '_kmax20.png')
 	plt.show()
 
 	# Differences between MST and Gusfield
