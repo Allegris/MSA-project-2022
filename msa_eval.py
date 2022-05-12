@@ -177,12 +177,10 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	plt.clf() # Clear plot
 	'''
 
-
 	# Time plot
 	print("Time for n = ", n)
 	plt.scatter(k_list, g_time_list, color = "red", alpha = 0.5) # Gusfield times
 	plt.scatter(k_list, m_time_list, color="blue", alpha = 0.5) # MST times
-	plt.scatter(k_list, og_time_list, color="green", alpha = 0.5) # ordered Gusfield times
 	plt.xticks(range(1,21))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
@@ -195,13 +193,53 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	print("Time/(k^2*n^2) for n = ", n)
 	plt.scatter(k_list, g_exptime_list, color = "red", alpha = 0.5) # Gusfield times
 	plt.scatter(k_list, m_exptime_list, color="blue", alpha = 0.5) # MST times
-	plt.scatter(k_list, og_exptime_list, color="green", alpha = 0.5) # ordered Gusfield times
 	plt.xticks(range(1,21))
-	plt.ylim(-0.005, 0.005)
+	#plt.ylim(-0.005, 0.005)
+	plt.ylim(0, 10*(10**(-6)))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec) / k^2*n^2", fontsize = 13)
 	plt.savefig('res_exptime_random_n' + str(n) + '_kmax20.png')
+	plt.show()
+	plt.clf() # Clear plot
+
+	# Score plot
+	print("Score for n = ", n)
+	plt.scatter(k_list, g_score_list, color = "red", alpha = 0.5) # Gusfield scores
+	plt.scatter(k_list, m_score_list, color="blue", alpha = 0.5) # MST scores
+	plt.xticks(range(1,21))
+	plt.title("n = " + str(n))
+	plt.xlabel("Number of sequences, k", fontsize = 13)
+	plt.ylabel("SP-score", fontsize = 13)
+	plt.savefig('res_score_random_n' + str(n) + '_kmax20.png')
+	plt.show()
+
+
+	# Time plot
+	print("Time for n = ", n)
+	plt.scatter(k_list, g_time_list, color = "red", alpha = 0.5) # Gusfield times
+	plt.scatter(k_list, m_time_list, color="blue", alpha = 0.5) # MST times
+	plt.scatter(k_list, og_time_list, color="green", alpha = 0.5) # ordered Gusfield times
+	plt.xticks(range(1,21))
+	plt.title("n = " + str(n))
+	plt.xlabel("Number of sequences, k", fontsize = 13)
+	plt.ylabel("Time (sec)", fontsize = 13)
+	plt.savefig('res2_time_random_n' + str(n) + '_kmax20.png')
+	plt.show()
+	plt.clf() # Clear plot
+
+	# Expected time plot
+	print("Time/(k^2*n^2) for n = ", n)
+	plt.scatter(k_list, g_exptime_list, color = "red", alpha = 0.5) # Gusfield times
+	plt.scatter(k_list, m_exptime_list, color="blue", alpha = 0.5) # MST times
+	plt.scatter(k_list, og_exptime_list, color="green", alpha = 0.5) # ordered Gusfield times
+	plt.xticks(range(1,21))
+	#plt.ylim(-0.005, 0.005)
+	plt.ylim(0, 10*(10**(-6)))
+	plt.title("n = " + str(n))
+	plt.xlabel("Number of sequences, k", fontsize = 13)
+	plt.ylabel("Time (sec) / k^2*n^2", fontsize = 13)
+	plt.savefig('res2_exptime_random_n' + str(n) + '_kmax20.png')
 	plt.show()
 	plt.clf() # Clear plot
 
@@ -214,7 +252,7 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("SP-score", fontsize = 13)
-	plt.savefig('res_score_random_n' + str(n) + '_kmax20.png')
+	plt.savefig('res2_score_random_n' + str(n) + '_kmax20.png')
 	plt.show()
 
 	# Differences between MST and Gusfield

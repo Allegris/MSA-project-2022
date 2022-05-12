@@ -1,7 +1,11 @@
 import sys
 import prim
 import project2_linear as pa # Pairwise alignment / SP score
-import msa_common
+from project2_linear import calculate_alignment_matrix
+from project2_linear import backtrack_nonrec
+from prim import MST_prim
+#import msa_common as msa
+from msa_common import extend_M
 import msa_sp_score_3k as sp_score_msa # Storm's script
 import fasta_and_phylip as fp # Helper functions for reading/writing/parsing fasta and phylip files
 
@@ -23,42 +27,39 @@ Computes a multiple sequence alignment (MSA) of the input nodes by:
 
 Returns the MSA
 '''
-def MST_MSA_approx(nodes, node_strings, sub_matrix, gap_cost):
-    MST_pairs_to_align = prim.MST_prim(nodes, node_strings, sub_matrix, gap_cost)
-    #print("MST edges ordered (pairs to align):", MST_pairs_to_align)
-    M = []
-	# Contains, for string index i, the row index in M that corresponds to this string
-	# This is later used for sorting the rows in M s.t. the string with index 0 is first, then index 1, etc.
-    str_idx_to_row = [None] * len(nodes)
+def MST_MSA_approx(seq_indices, seqs, sub_matrix, gap_cost):
+	M = []
+	# Keep track of seq index vs row index in M
+	seq_idx_to_row = [None] * len(seq_indices)
+	# Iterate MST edges
+	MST = MST_prim(seq_indices, seqs, sub_matrix, gap_cost)
+	for i in range(len(MST)):
+		# Edge (pi[u], u)
+		parent = MST[i][0]
+		node = MST[i][1]
+		# Fill out dyn. prog. table for pairwise alignment
+		table = calculate_alignment_matrix(sub_matrix, gap_cost, seqs[parent], seqs[node])
+		# Construct opt. align. from table
+		A = backtrack_nonrec(table, seqs[parent], seqs[node], sub_matrix, gap_cost)
+		if i == 0:
+			seq_idx_to_row[parent] = 0
+			seq_idx_to_row[node] = 1
+			M = A
+		else:
+			seq_idx_to_row[node] = len(M)
+			M = extend_M(M, A, seq_idx_to_row[parent])
+	return M
+	# Used for testing: does not change score of M
+	# Sort M, s.t. the row order correspond
+	# to the order of input seqs
+	'''
+	sorted_M = [None] * len(M)
+	for i in range(len(str_idx_to_row)):
+		row_idx = str_idx_to_row[i]
+		sorted_M[i] = M[row_idx]
+	return sorted_M
+	'''
 
-    for i in range(len(MST_pairs_to_align)):
-		# The pair of strings to align in this iteration
-        pair = MST_pairs_to_align[i]
-        str_1 = node_strings[pair[0]]
-        str_2 = node_strings[pair[1]]
-		# Make alignment matrix for the pair of strings
-        pair_align_matrix = pa.calculate_alignment_matrix(sub_matrix, gap_cost, str_1, str_2) # Alignment A
-		# Create an optimal alignment, by backtracking the matrix
-        pair_opt_align = pa.backtrack_nonrec(pair_align_matrix, str_1, str_2, sub_matrix, gap_cost)
-        if i == 0:
-            M = pair_opt_align
-			# The first pair are the first two rows in M
-            str_idx_to_row[pair[0]] = 0
-            str_idx_to_row[pair[1]] = 1
-        else:
-			# We now add string with index pair[1] to the M matrix as row index len(M) - record this info
-            str_idx_to_row[pair[1]] = len(M)
-			# Row index in M of the upper string in pairwise alignment
-            row_idx = str_idx_to_row[pair[0]]
-			# Extend matrix M with the new pairwise optimal alignment
-            M = msa_common.extend_M(M, pair_opt_align, row_idx)
-	# Sort M so that the row order correspond to the order in node_strings
-    sorted_M = [None] * len(M)
-    for i in range(len(str_idx_to_row)):
-        row_idx = str_idx_to_row[i]
-        sorted_M[i] = M[row_idx]
-    return sorted_M
-    # return [M[i] for i in [1, 0, 2]]
 
 
 # Function for testing

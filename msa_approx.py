@@ -95,8 +95,11 @@ def ordered_gusfield(S, sub_matrix, gap_cost):
 			sum_scores += score_matrix[i, j]
     # Calculate total scores for S[i]'s
 	total_scores = [sum(score) for score in score_matrix]
-	# Sort the scores from low to high
-	index_and_score = sorted(enumerate(total_scores), key = lambda i: i[1])
+    # The min score index
+	best_score_index = np.argmin(total_scores) # index of center string
+	best_row = score_matrix[best_score_index,:] # distances to center string
+
+	index_and_score = sorted(enumerate(best_row), key = lambda i: i[1])
 	return index_and_score
 
 def MSA_approx_ordered_gusfield(S, index_and_score, sub_matrix, gap_cost):
@@ -149,8 +152,8 @@ if(all((c in letters for c in s) for s in S)):
 	#print(msa.compute_sp_score("alignment.fasta"))
 else:
     print("Error: A letter in a sequence is not specified in the substitution matrix.")
-
 '''
+
 
 ##########################################################################
 # Measure running time

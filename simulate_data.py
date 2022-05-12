@@ -64,7 +64,7 @@ def print_seqs_to_file(seq_list, n, k):
 
 
 ns = [10, 50, 100, 150]
-sub_rate = 0.05 # 0.75 corresponds to random strings
+sub_rate = 1 # 0.75 corresponds to random strings
 indel_rate = sub_rate / 5
 
 '''
