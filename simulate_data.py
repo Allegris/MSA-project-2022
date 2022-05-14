@@ -88,13 +88,32 @@ for i in range(1, 11):
 '''
 
 
+# 2 ancestors
 for n in ns:
 	anc1 = common_ancestor(n)
-	anc2 = common_ancestor(n)
+	anc2 = "A" * n #common_ancestor(n)
 	for k in range(1, 11):
 		d1 = descendants(anc1, alpha, sub_rate, indel_rate, k)
 		d2 = descendants(anc2, alpha, sub_rate, indel_rate, k)
 		print_seqs_to_file(d1 + d2, n, k*2)
+
+
+'''
+# 4 ancestors
+for n in ns:
+	anc1 = common_ancestor(n)
+	anc2 = common_ancestor(n)
+	anc3 = common_ancestor(n)
+	anc4 = common_ancestor(n)
+	for k in range(1, 6):
+		d1 = descendants(anc1, alpha, sub_rate, indel_rate, k)
+		d2 = descendants(anc2, alpha, sub_rate, indel_rate, k)
+		d3 = descendants(anc3, alpha, sub_rate, indel_rate, k)
+		d4 = descendants(anc4, alpha, sub_rate, indel_rate, k)
+		print_seqs_to_file(d1 + d2 + d3 + d4, n, k*4)
+'''
+
+
 '''
 
 
