@@ -64,7 +64,7 @@ def print_seqs_to_file(seq_list, n, k):
 
 
 ns = [10, 50, 100, 150]
-sub_rate = 1 # 0.75 corresponds to random strings
+sub_rate = 0.05 # 1 corresponds to random strings
 indel_rate = sub_rate / 5
 
 '''
@@ -95,18 +95,18 @@ for n in ns:
 		d1 = descendants(anc1, alpha, sub_rate, indel_rate, k)
 		d2 = descendants(anc2, alpha, sub_rate, indel_rate, k)
 		print_seqs_to_file(d1 + d2, n, k*2)
-
 '''
+
 
 for n in ns:
 	anc = common_ancestor(n)
 	for k in range(2, 21):
 		d = descendants(anc, alpha, sub_rate, indel_rate, k)
 		print_seqs_to_file(d, n, k)
+
+
+
 '''
-
-
-
 
 
 
