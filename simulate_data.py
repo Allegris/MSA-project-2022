@@ -91,7 +91,7 @@ for i in range(1, 11):
 # 2 ancestors
 for n in ns:
 	anc1 = common_ancestor(n)
-	anc2 = "A" * n #common_ancestor(n)
+	anc2 = common_ancestor(n) #"A" * n
 	for k in range(1, 11):
 		d1 = descendants(anc1, alpha, sub_rate, indel_rate, k)
 		d2 = descendants(anc2, alpha, sub_rate, indel_rate, k)

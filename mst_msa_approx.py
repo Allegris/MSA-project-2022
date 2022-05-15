@@ -34,7 +34,7 @@ def MST_MSA_approx(seq_indices, seqs, sub_matrix, gap_cost):
 	# Iterate MST edges
 	MST = MST_prim(seq_indices, seqs, sub_matrix, gap_cost)
 	for i in range(len(MST)):
-		# Edge (pi[u], u)
+		# Edge (parent, node)
 		parent = MST[i][0]
 		node = MST[i][1]
 		# Fill out dyn. prog. table for pairwise alignment
