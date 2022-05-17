@@ -157,22 +157,22 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	# Prim time plot
 	print("Prim time for n = ", n)
 	plt.scatter(k_list, p_time_list, color = "green") # Prim times
-	plt.xticks(range(1,41, 5))
+	plt.xticks(range(5,41,5)) # plt.xticks(range(1, 21))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec)", fontsize = 13)
-	plt.savefig('res_prim_time_low2anc_n' + str(n) + '_kmax20.png')
+	plt.savefig('res_prim_time_random_n' + str(n) + '_kmax40.png')
 	plt.show()
 	plt.clf() # Clear plot
 
 	# Prim expected time plot
 	print("Prim exp time for n = ", n)
 	plt.scatter(k_list, p_exptime_list, color = "green") # Prim times
-	plt.xticks(range(1,41,5))
+	plt.xticks(range(5,41,5)) # plt.xticks(range(1, 21))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec) / k^2", fontsize = 13)
-	plt.savefig('res_prim_exptime_low2anc_n' + str(n) + '_kmax20.png')
+	plt.savefig('res_prim_exptime_random_n' + str(n) + '_kmax40.png')
 	plt.show()
 	plt.clf() # Clear plot
 

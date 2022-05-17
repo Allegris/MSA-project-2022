@@ -8,6 +8,7 @@ import project2_linear as pa #pairwise alignment / SP score
 # nodes is a corresponding numbering of the strings: [0, 1, 2,...]
 def MST_prim(nodes, node_strings, sub_matrix, gap_cost):
 	V = nodes.copy() # The set of nodes
+	in_mst = [False] * len(V)
 	# Construct score matrix
 	cost = construct_score_matrix(nodes, node_strings, sub_matrix, gap_cost)
 	mst = [] # Will contain the MST edges (i.e. the resulting MST)
@@ -16,30 +17,27 @@ def MST_prim(nodes, node_strings, sub_matrix, gap_cost):
 
 	key[0] = 0 # Set the key of node 0 to 0, ensuring that we pick this as the first node
 
-	# While not all nodes are in MST
-	while len(mst) < len(V):
+	for _ in range(len(V)):
 		# Find the node that can be added to the MST giving
 		# the lowest possible weight addition
-		u = find_min_node(V, mst, key)
-		mst.append(u)
-
+		u = find_min_node(V, in_mst, key)
+		mst.append((parent[u], u))
+		in_mst[u] = True
 		# Update keys and parents of nodes not in MST, since MST has changed
 		for v in V:
-			if v not in mst and cost[u][v] < key[v]:
+			if not in_mst[v] and cost[u][v] < key[v]:
 				key[v] = cost[u][v]
 				parent[v] = u
-	# Return MST as edge pairs (u, v)
-	# The edges appear in the order that they are added to the MST
-	mst = [(parent[v], v) for v in mst[1:]] # Remove the first entry, since this is "None node to the root", i.e. (None, 0)
-	return mst
+	return mst[1:] # Remove the first entry, since this is "None node to the root", i.e. (None, 0)
+
 
 
 # Returns the node in the set *V - mst* with the lowest key value
-def find_min_node(V, mst, key):
+def find_min_node(V, in_mst, key):
 	min_val = sys.maxsize
 	min_node = None
 	for v in V:
-		if v not in mst and key[v] < min_val:
+		if not in_mst[v] and key[v] < min_val:
 			min_node = v
 			min_val = key[v]
 	return min_node
