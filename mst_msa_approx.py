@@ -38,9 +38,9 @@ def MST_MSA_approx(seq_indices, seqs, sub_matrix, gap_cost):
 		parent = MST[i][0]
 		node = MST[i][1]
 		# Fill out dyn. prog. table for pairwise alignment
-		table = construct_alignment(sub_matrix, gap_cost, seqs[parent], seqs[node])
+		table = fill_table(seqs[parent], seqs[node], sub_matrix, gap_cost)
 		# Construct opt. align. from table
-		A = fill_table(table, seqs[parent], seqs[node], sub_matrix, gap_cost)
+		A = construct_alignment(table, seqs[parent], seqs[node], sub_matrix, gap_cost)
 		if i == 0:
 			seq_idx_to_row[parent] = 0
 			seq_idx_to_row[node] = 1

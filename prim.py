@@ -61,7 +61,7 @@ def construct_score_matrix(S, node_strings, sub_matrix, gap_cost):
             if(score_matrix[i, j] == None):
                 str_A = node_strings[S[i]]
                 str_B = node_strings[S[j]]
-                score = pa.calculate_alignment_matrix(sub_matrix, gap_cost, str_A, str_B)[len(str_A), len(str_B)]
+                score = pa.fill_table(str_A, str_B, sub_matrix, gap_cost)[len(str_A), len(str_B)]
                 # Distance from S[i] to S[j] is equal to the distance from S[j] to S[i]
                 score_matrix[i, j] = score
                 score_matrix[j, i] = score

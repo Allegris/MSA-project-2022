@@ -59,7 +59,7 @@ def parse_phylip(filename, getAlphabet = False):
 
 
 #Calculate cost of an optimal alignment for string str_A and str_B with substitution matrix sm and gap cost gc
-def fill_table(sub_m, gap_cost, strA, strB):
+def fill_table(strA, strB, sub_m, gap_cost):
     # Global vars
     global str_A
     global str_B

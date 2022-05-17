@@ -22,7 +22,7 @@ def MSA_approx(S, center, sub_matrix, gap_cost):
     M = []
     S.remove(center)
     for s in S:
-        A_matrix = pa.fill_table(sub_matrix, gap_cost, center, s)
+        A_matrix = pa.fill_table(center, s, sub_matrix, gap_cost)
         # optimal alignment
         A = pa.construct_alignment(A_matrix, center, s, sub_matrix, gap_cost)
         if(s != S[0]):
@@ -50,7 +50,7 @@ def find_center_string(S, sub_matrix, gap_cost):
 		for j in range(len(S)):
             # If we have NOT already computed the distance from S[i] to S[j], do this
 			if(score_matrix[i, j] == None):
-				score = pa.fill_table(sub_matrix, gap_cost, S[i], S[j])[len(S[i]), len(S[j])]
+				score = pa.fill_table(S[i], S[j], sub_matrix, gap_cost)[len(S[i]), len(S[j])]
                 # Distance from S[i] to S[j] is equal to the distance from S[j] to S[i]
 				score_matrix[i, j] = score
 				score_matrix[j, i] = score
@@ -87,7 +87,7 @@ def ordered_gusfield(S, sub_matrix, gap_cost):
 		for j in range(len(S)):
             # If we have NOT already computed the distance from S[i] to S[j], do this
 			if(score_matrix[i, j] == None):
-				score = pa.fill_table(sub_matrix, gap_cost, S[i], S[j])[len(S[i]), len(S[j])]
+				score = pa.fill_table(S[i], S[j], sub_matrix, gap_cost)[len(S[i]), len(S[j])]
                 # Distance from S[i] to S[j] is equal to the distance from S[j] to S[i]
 				score_matrix[i, j] = score
 				score_matrix[j, i] = score
@@ -108,7 +108,7 @@ def MSA_approx_ordered_gusfield(S, index_and_score, sub_matrix, gap_cost):
 	for i in range(1, len(index_and_score)):
 		idx = index_and_score[i][0]
 		s = S[idx]
-		A_matrix = pa.fill_table(sub_matrix, gap_cost, center, s)
+		A_matrix = pa.fill_table(center, s, sub_matrix, gap_cost)
         # optimal alignment
 		A = pa.construct_alignment(A_matrix, center, s, sub_matrix, gap_cost)
 		if M:
