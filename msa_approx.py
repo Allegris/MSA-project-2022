@@ -1,7 +1,6 @@
 import sys
 import numpy as np
 import time
-import seaborn as sns
 import project2_linear as pa #pairwise alignment
 import msa_common
 import msa_sp_score_3k as msa #score for approx
@@ -23,9 +22,9 @@ def MSA_approx(S, center, sub_matrix, gap_cost):
     M = []
     S.remove(center)
     for s in S:
-        A_matrix = pa.calculate_alignment_matrix(sub_matrix, gap_cost, center, s)
+        A_matrix = pa.fill_table(sub_matrix, gap_cost, center, s)
         # optimal alignment
-        A = pa.backtrack_nonrec(A_matrix, center, s, sub_matrix, gap_cost)
+        A = pa.construct_alignment(A_matrix, center, s, sub_matrix, gap_cost)
         if(s != S[0]):
             M = msa_common.extend_M(M, A, row_idx = 0) # center string is row 0
         else:
@@ -51,7 +50,7 @@ def find_center_string(S, sub_matrix, gap_cost):
 		for j in range(len(S)):
             # If we have NOT already computed the distance from S[i] to S[j], do this
 			if(score_matrix[i, j] == None):
-				score = pa.calculate_alignment_matrix(sub_matrix, gap_cost, S[i], S[j])[len(S[i]), len(S[j])]
+				score = pa.fill_table(sub_matrix, gap_cost, S[i], S[j])[len(S[i]), len(S[j])]
                 # Distance from S[i] to S[j] is equal to the distance from S[j] to S[i]
 				score_matrix[i, j] = score
 				score_matrix[j, i] = score
@@ -88,7 +87,7 @@ def ordered_gusfield(S, sub_matrix, gap_cost):
 		for j in range(len(S)):
             # If we have NOT already computed the distance from S[i] to S[j], do this
 			if(score_matrix[i, j] == None):
-				score = pa.calculate_alignment_matrix(sub_matrix, gap_cost, S[i], S[j])[len(S[i]), len(S[j])]
+				score = pa.fill_table(sub_matrix, gap_cost, S[i], S[j])[len(S[i]), len(S[j])]
                 # Distance from S[i] to S[j] is equal to the distance from S[j] to S[i]
 				score_matrix[i, j] = score
 				score_matrix[j, i] = score
@@ -109,9 +108,9 @@ def MSA_approx_ordered_gusfield(S, index_and_score, sub_matrix, gap_cost):
 	for i in range(1, len(index_and_score)):
 		idx = index_and_score[i][0]
 		s = S[idx]
-		A_matrix = pa.calculate_alignment_matrix(sub_matrix, gap_cost, center, s)
+		A_matrix = pa.fill_table(sub_matrix, gap_cost, center, s)
         # optimal alignment
-		A = pa.backtrack_nonrec(A_matrix, center, s, sub_matrix, gap_cost)
+		A = pa.construct_alignment(A_matrix, center, s, sub_matrix, gap_cost)
 		if M:
 			M = msa_common.extend_M(M, A, row_idx = 0) # center string is row 0
 		else:
@@ -153,34 +152,6 @@ if(all((c in letters for c in s) for s in S)):
 else:
     print("Error: A letter in a sequence is not specified in the substitution matrix.")
 '''
-
-
-##########################################################################
-# Measure running time
-##########################################################################
-
-
-'''
-lst_time=[]
-lst_length=[]
-#print(len(str_A))
-for i in range(1,len(str_A)//10):
-    s=10*i
-    start = time.time()
-    #t3, p3 = calculate_alignment_matrix(sub_matrix, gap_cost, str_A[:s], str_B[:s])
-    center = find_center_string(S)
-    seq_list = MSA_approx(S, center)
-    end = time.time()
-    lst_time.append((end-start)/s**2)
-    lst_length.append(s)
-print(lst_time)
-
-ax = sns.scatterplot(x = lst_length, y = lst_time)
-ax.set(xlabel = "lenght of seq", ylabel = "Time (sec/n^2)")
-figure = ax.get_figure()
-figure.savefig("time_of_alg_linear_n2.png")
-'''
-
 
 
 

@@ -59,7 +59,7 @@ def parse_phylip(filename, getAlphabet = False):
 
 
 #Calculate cost of an optimal alignment for string str_A and str_B with substitution matrix sm and gap cost gc
-def calculate_alignment_matrix(sub_m, gap_cost, strA, strB):
+def fill_table(sub_m, gap_cost, strA, strB):
     # Global vars
     global str_A
     global str_B
@@ -149,7 +149,7 @@ def backtrack(T, str_A, str_B, sm, gc, res_str_A, res_str_B, i, j):
 
 
 #Find an optimal alignment based on an alignment matrix, T
-def backtrack_nonrec(T, str_A, str_B, sm, gc):
+def construct_alignment(T, str_A, str_B, sm, gc):
     #print("Backtracking nonrecursively")
     res_str_A = ""
     res_str_B = ""

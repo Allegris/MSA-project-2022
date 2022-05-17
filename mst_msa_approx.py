@@ -1,8 +1,8 @@
 import sys
 import prim
 import project2_linear as pa # Pairwise alignment / SP score
-from project2_linear import calculate_alignment_matrix
-from project2_linear import backtrack_nonrec
+from project2_linear import fill_table
+from project2_linear import construct_alignment
 from prim import MST_prim
 #import msa_common as msa
 from msa_common import extend_M
@@ -38,9 +38,9 @@ def MST_MSA_approx(seq_indices, seqs, sub_matrix, gap_cost):
 		parent = MST[i][0]
 		node = MST[i][1]
 		# Fill out dyn. prog. table for pairwise alignment
-		table = calculate_alignment_matrix(sub_matrix, gap_cost, seqs[parent], seqs[node])
+		table = construct_alignment(sub_matrix, gap_cost, seqs[parent], seqs[node])
 		# Construct opt. align. from table
-		A = backtrack_nonrec(table, seqs[parent], seqs[node], sub_matrix, gap_cost)
+		A = fill_table(table, seqs[parent], seqs[node], sub_matrix, gap_cost)
 		if i == 0:
 			seq_idx_to_row[parent] = 0
 			seq_idx_to_row[node] = 1

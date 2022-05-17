@@ -5,6 +5,7 @@ import numpy as np
 import prim
 import matplotlib.pyplot as plt
 import mst_msa_approx as mst_algo
+import project2_linear as pa
 import msa_approx as gusfield
 import msa_sp_score_3k as sp_score_msa # Storm's script
 import fasta_and_phylip as fp
@@ -91,7 +92,7 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			for pair in mst:
 			    str_1 = S[pair[0]]
 			    str_2 = S[pair[1]]
-			    pair_score = pa.calculate_alignment_matrix(sub_matrix, gap_cost, str_1, str_2)[len(str_1), len(str_2)]
+			    pair_score = pa.fill_table(sub_matrix, gap_cost, str_1, str_2)[len(str_1), len(str_2)]
 			    induced_score = induced_pair_score(seqs[pair[0]], seqs[pair[1]])
 			    if(induced_score == pair_score):
 			        #print("Scores ARE the same for", pair[0], "and", pair[1])
