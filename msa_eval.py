@@ -43,7 +43,7 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 
 			S_idx = list(range(len(S)))
 
-			'''
+
 			##### PRIM ALGO ONLY #####
 			p_times = []
 			for i in range(5):
@@ -59,8 +59,9 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 
 			# Expected runningtime: time / k^2
 			p_exptime_list.append(p_time/(k**2))
-			'''
 
+
+			'''
 			##### MSA #####
 			# Run algo 5 times and use average running time
 			m_times = []
@@ -81,7 +82,7 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			fp.write_to_fasta_file("alignment_" + str(k) +".fasta", seqs)
 			m_score = sp_score_msa.compute_sp_score("alignment_" + str(k) +".fasta")
 			m_score_list.append(m_score)
-
+			'''
 
 			'''
 			#CORRECTNESS TEST: Are scores the same for induced pair alignments and pair alignments of pairs in MST?
@@ -103,6 +104,7 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			print("***DID ALL TESTS SUCCEED:", tests_true)
 			'''
 
+			'''
 			##### Ordered Gusfield #####
 			og_times = []
 			for _ in range(10):
@@ -123,9 +125,9 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			fp.write_to_fasta_file("alignment.fasta", seqs)
 			og_score = sp_score_msa.compute_sp_score("alignment.fasta")
 			og_score_list.append(og_score)
+			'''
 
-
-
+			'''
 			##### Gusfield #####
 			g_times = []
 			for _ in range(10):
@@ -146,16 +148,16 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 			fp.write_to_fasta_file("alignment.fasta", seqs)
 			g_score = sp_score_msa.compute_sp_score("alignment.fasta")
 			g_score_list.append(g_score)
-
+			'''
 
 		else:
 			   print("Error: A letter in a sequence is not specified in the substitution matrix.")
 
-	'''
+
 	# Prim time plot
 	print("Prim time for n = ", n)
 	plt.scatter(k_list, p_time_list, color = "green") # Prim times
-	plt.xticks(range(1,21))
+	plt.xticks(range(1,41, 5))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec)", fontsize = 13)
@@ -166,15 +168,15 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 	# Prim expected time plot
 	print("Prim exp time for n = ", n)
 	plt.scatter(k_list, p_exptime_list, color = "green") # Prim times
-	plt.xticks(range(1,21))
+	plt.xticks(range(1,41,5))
 	plt.title("n = " + str(n))
 	plt.xlabel("Number of sequences, k", fontsize = 13)
 	plt.ylabel("Time (sec) / k^2", fontsize = 13)
 	plt.savefig('res_prim_exptime_low2anc_n' + str(n) + '_kmax20.png')
 	plt.show()
 	plt.clf() # Clear plot
-	'''
 
+	'''
 	# Time plot
 	print("Time for n = ", n)
 	plt.scatter(k_list, g_time_list, color = "red", alpha = 0.5) # Gusfield times
@@ -269,7 +271,10 @@ def evaluate_MSA_algo(folder, sub_matrix_filename, gap_cost, n):
 		 "\nT_m/T_g average: " + str(time_frac_avg) + "\nT_m/T_g variance: " + str(time_frac_var))
 	x.close()
 
+
 	return score_frac_avg, score_frac_var, time_frac_avg, time_frac_var
+	'''
+	return "DONE"
 
 # Function for testing
 # Input is two rows from alignment
@@ -308,7 +313,7 @@ sub_matrix_filename = "sub_m.txt"
 gap_cost = 5
 #n = 10
 
-ns = [10, 50, 100, 150]
+ns = [10, 50, 100, 150]#[150, 200, 250, 300]
 
 for n in ns:
 	print("**************N:", n)
