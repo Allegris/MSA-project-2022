@@ -1,4 +1,0 @@
-S_m/S_g average: 1.9334548200258763
-S_m/S_g variance: 1.9938282742885356
-T_m/T_g average: 0.8977752119753347
-T_m/T_g variance: 0.0290650052435166

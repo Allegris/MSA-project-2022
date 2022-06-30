@@ -1,6 +1,0 @@
-g: *enter*
-
-then
-
-cd G:\My Drive\Bioinformatik\2022\Project MSA\Code\AiB project 3
-
